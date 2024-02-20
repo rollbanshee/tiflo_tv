@@ -18,9 +18,10 @@ class Onboarding extends StatefulWidget {
   State<Onboarding> createState() => _OnboardingState();
 }
 
-class _OnboardingState extends State<Onboarding> {
+class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     final providerOnBoarding = context.read<OnBoardingProvider>();
     providerOnBoarding.initStateOnBoardingSounds();
     // scale();
@@ -36,6 +37,18 @@ class _OnboardingState extends State<Onboarding> {
   //     });
   //   }
   // }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    final providerOnBoarding = context.read<OnBoardingProvider>();
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
+      providerOnBoarding.player.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      providerOnBoarding.player.resume();
+    }
+  }
 
   DefaultCacheManager manager = DefaultCacheManager();
   @override

@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
         overlays: SystemUiOverlay.values);
     Future.delayed(const Duration(seconds: 2), () {
       // _scale();
-      Navigator.push(context, _createRoute());
+      Navigator.pushReplacement(context, _createRoute());
     });
     super.initState();
   }
@@ -53,8 +53,10 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //     systemNavigationBarColor: Colors.transparent));
     super.dispose();
   }
 

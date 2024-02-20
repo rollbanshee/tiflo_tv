@@ -63,7 +63,7 @@ class OnBoardingPartBottom extends StatelessWidget {
                   providerOnBoarding.onValueChanged(value);
                   providerOnBoarding.sliding == 1
                       ? providerOnBoarding.player
-                          .play(AssetSource("sounds/entertocategories.mp3"))
+                          .play(AssetSource(AppSounds.entertocategories))
                       : providerOnBoarding.player.stop();
                 })
           ]),

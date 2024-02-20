@@ -15,7 +15,8 @@ class YoutubePlayerSesli extends StatefulWidget {
   State<YoutubePlayerSesli> createState() => _YoutubePlayerSesliState();
 }
 
-class _YoutubePlayerSesliState extends State<YoutubePlayerSesli> {
+class _YoutubePlayerSesliState extends State<YoutubePlayerSesli>
+    with WidgetsBindingObserver {
   late YoutubePlayerController controller;
   late Item dataDetailScreen;
   final playerSesliYoutube = AudioPlayer();
@@ -23,6 +24,7 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli> {
   void initState() {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerDetailScreen = context.read<DetailScreenProvider>();
+    WidgetsBinding.instance.addObserver(this);
     playAudio();
     providerDetailScreen.isGetViewsCalled = false;
     dataDetailScreen = providerOnBoarding.items
@@ -36,6 +38,18 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli> {
             controller, dataDetailScreen.id, dataDetailScreen)();
       });
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
+      playerSesliYoutube.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      playerSesliYoutube.resume();
+    }
   }
 
   void playAudio() async {

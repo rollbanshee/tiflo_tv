@@ -23,11 +23,12 @@ class Category extends StatefulWidget {
   State<Category> createState() => _CategoryState();
 }
 
-class _CategoryState extends State<Category> {
+class _CategoryState extends State<Category> with WidgetsBindingObserver {
   @override
   void initState() {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.read<CategoryProvider>();
+    WidgetsBinding.instance.addObserver(this);
     providerCategory.indexItem1 = 0;
     if (providerOnBoarding.sliding == 1) {
       providerCategory.initStateCategorySounds(
@@ -35,6 +36,23 @@ class _CategoryState extends State<Category> {
           widget.categoryAudio);
     }
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    final providerCategory = context.read<CategoryProvider>();
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
+      providerCategory.player.pause();
+      providerCategory.playerBack.pause();
+      providerCategory.playerInitState.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      providerCategory.player.resume();
+      providerCategory.playerBack.resume();
+      providerCategory.playerInitState.resume();
+    }
   }
 
   @override

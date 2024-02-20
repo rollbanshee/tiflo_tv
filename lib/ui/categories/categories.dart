@@ -14,17 +14,34 @@ class Categories extends StatefulWidget {
   State<Categories> createState() => _CategoriesState();
 }
 
-class _CategoriesState extends State<Categories> {
+class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
   @override
   void initState() {
     final providerCategories = context.read<CategoriesProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
-
+    WidgetsBinding.instance.addObserver(this);
     providerCategories.indexItem1 = 0;
     if (providerOnBoarding.sliding == 1) {
       providerCategories.initStateCategoriesSounds(providerOnBoarding.data);
     }
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    final providerCategories = context.read<CategoriesProvider>();
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
+      providerCategories.player.pause();
+      providerCategories.playerBack.pause();
+      providerCategories.playerInitState.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      providerCategories.player.resume();
+      providerCategories.playerBack.resume();
+      providerCategories.playerInitState.resume();
+    }
   }
 
   @override

@@ -61,7 +61,7 @@ class _DetailScreenState extends State<DetailScreen> {
     final providerDetailScreen = context.watch<DetailScreenProvider>();
     return YoutubePlayerBuilder(
       onExitFullScreen: () {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
             overlays: SystemUiOverlay.values);
       },
       onEnterFullScreen: () {},
