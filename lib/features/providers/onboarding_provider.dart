@@ -28,7 +28,11 @@ class OnBoardingProvider extends ChangeNotifier {
                     child: const CircularProgressIndicator(
                         strokeWidth: 3, color: Colors.white),
                   ))
-                : const Center(child: CupertinoActivityIndicator());
+                : Center(
+                    child: CupertinoActivityIndicator(
+                    color: Colors.white,
+                    radius: 15.r,
+                  ));
           });
       await manager.emptyCache();
       data = await apiClient.getData();

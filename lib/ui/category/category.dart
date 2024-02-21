@@ -43,7 +43,6 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
     if (!mounted) return;
     final providerCategory = context.read<CategoryProvider>();
     if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden ||
         state == AppLifecycleState.paused) {
       providerCategory.player.pause();
       providerCategory.playerBack.pause();

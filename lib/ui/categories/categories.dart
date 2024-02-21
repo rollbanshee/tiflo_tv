@@ -32,7 +32,6 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
     if (!mounted) return;
     final providerCategories = context.read<CategoriesProvider>();
     if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden ||
         state == AppLifecycleState.paused) {
       providerCategories.player.pause();
       providerCategories.playerBack.pause();

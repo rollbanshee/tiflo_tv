@@ -92,61 +92,58 @@ class _BottomNavBarState extends State<BottomNavBar> {
       body: Center(
         child: _widgets[_currentIndex],
       ),
-      bottomNavigationBar: SizedBox(
-        height: 60.h,
-        child: Theme(
-          data: ThemeData(highlightColor: Colors.transparent),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            type: BottomNavigationBarType.fixed,
-            showUnselectedLabels: true,
-            unselectedItemColor: const Color.fromRGBO(180, 185, 201, 1),
-            selectedItemColor: const Color.fromRGBO(239, 81, 64, 1),
-            selectedFontSize: 11.sp,
-            unselectedFontSize: 11.sp,
-            currentIndex: _currentIndex,
-            onTap: (value) => setState(() {
-              _currentIndex = value;
-            }),
-            items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppSvgs.bottomNavBarHome),
-                label: "Ana səhifə",
-                activeIcon: SvgPicture.asset(
-                  AppSvgs.bottomNavBarHome,
-                  // ignore: deprecated_member_use
-                  color: const Color.fromRGBO(239, 81, 64, 1),
-                ),
+      bottomNavigationBar: Theme(
+        data: ThemeData(highlightColor: Colors.transparent),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          unselectedItemColor: const Color.fromRGBO(180, 185, 201, 1),
+          selectedItemColor: const Color.fromRGBO(239, 81, 64, 1),
+          selectedFontSize: 11.sp,
+          unselectedFontSize: 11.sp,
+          currentIndex: _currentIndex,
+          onTap: (value) => setState(() {
+            _currentIndex = value;
+          }),
+          items: [
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(AppSvgs.bottomNavBarHome),
+              label: "Ana səhifə",
+              activeIcon: SvgPicture.asset(
+                AppSvgs.bottomNavBarHome,
+                // ignore: deprecated_member_use
+                color: const Color.fromRGBO(239, 81, 64, 1),
               ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppSvgs.bottomNavBarCategory),
-                label: "Kateqoriyalar",
-                activeIcon: SvgPicture.asset(
-                  AppSvgs.bottomNavBarCategory,
-                  // ignore: deprecated_member_use
-                  color: const Color.fromRGBO(239, 81, 64, 1),
-                ),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(AppSvgs.bottomNavBarCategory),
+              label: "Kateqoriyalar",
+              activeIcon: SvgPicture.asset(
+                AppSvgs.bottomNavBarCategory,
+                // ignore: deprecated_member_use
+                color: const Color.fromRGBO(239, 81, 64, 1),
               ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppSvgs.bottomNavBarFavourites),
-                label: "Seçilmişlər",
-                activeIcon: SvgPicture.asset(
-                  AppSvgs.bottomNavBarFavourites,
-                  // ignore: deprecated_member_use
-                  color: const Color.fromRGBO(239, 81, 64, 1),
-                ),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(AppSvgs.bottomNavBarFavourites),
+              label: "Seçilmişlər",
+              activeIcon: SvgPicture.asset(
+                AppSvgs.bottomNavBarFavourites,
+                // ignore: deprecated_member_use
+                color: const Color.fromRGBO(239, 81, 64, 1),
               ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppSvgs.bottomNavBarInfo),
-                label: "Haqqımızda",
-                activeIcon: SvgPicture.asset(
-                  AppSvgs.bottomNavBarInfo,
-                  // ignore: deprecated_member_use
-                  color: const Color.fromRGBO(239, 81, 64, 1),
-                ),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(AppSvgs.bottomNavBarInfo),
+              label: "Haqqımızda",
+              activeIcon: SvgPicture.asset(
+                AppSvgs.bottomNavBarInfo,
+                // ignore: deprecated_member_use
+                color: const Color.fromRGBO(239, 81, 64, 1),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

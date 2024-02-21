@@ -44,7 +44,6 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!mounted) return;
     if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden ||
         state == AppLifecycleState.paused) {
       playerSesliYoutube.pause();
     } else if (state == AppLifecycleState.resumed) {

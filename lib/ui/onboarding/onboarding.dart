@@ -42,7 +42,6 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
     if (!mounted) return;
     final providerOnBoarding = context.read<OnBoardingProvider>();
     if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden ||
         state == AppLifecycleState.paused) {
       providerOnBoarding.player.pause();
     } else if (state == AppLifecycleState.resumed) {

@@ -24,7 +24,7 @@ class DetailScreenFavButton extends StatelessWidget {
           // box.clear();
         },
         borderRadius: BorderRadius.circular(8.r),
-        child: Ink(
+        child: Container(
           padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 24.w),
           decoration: BoxDecoration(
               color: const Color.fromRGBO(53, 159, 160, 0.24),
