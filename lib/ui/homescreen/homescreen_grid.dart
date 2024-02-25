@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +17,30 @@ class HomeScreenGrid extends StatelessWidget {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
     final items = providerOnBoarding.items;
 
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12.h,
-            crossAxisSpacing: 24.w,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 2.5)),
-        itemCount: items.length,
-        itemBuilder: (context, index) => _GridItem(
-              items: items,
-              index: index,
-            ));
+    return items.isEmpty
+        ? Center(
+            child: Text(
+              "Siyahı boşdur",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: const Color.fromRGBO(157, 157, 157, 1),
+                  fontFamily: AppFonts.poppins,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.sp),
+            ),
+          )
+        : GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12.h,
+                crossAxisSpacing: 24.w,
+                childAspectRatio: MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height / 2.5)),
+            itemCount: items.length,
+            itemBuilder: (context, index) => _GridItem(
+                  items: items,
+                  index: index,
+                ));
   }
 }
 

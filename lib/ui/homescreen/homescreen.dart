@@ -50,7 +50,7 @@ class _HomeScreenPartTwoState extends State<HomeScreenPartTwo> {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
 
-    return RefreshIndicator.adaptive(
+    return RefreshIndicator(
       strokeWidth: 2,
       displacement: 50,
       backgroundColor: const Color.fromRGBO(75, 184, 186, 1),
@@ -74,11 +74,10 @@ class _HomeScreenPartTwoState extends State<HomeScreenPartTwo> {
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(
-                    top: 16.h,
-                    bottom: providerOnBoarding.sliding == 1 ? 16.h : 0),
-                child: const HomeScreenGrid(),
-              ),
+                  padding: EdgeInsets.only(
+                      top: 16.h,
+                      bottom: providerOnBoarding.sliding == 1 ? 16.h : 0),
+                  child: const HomeScreenGrid()),
             )
           ],
         ),

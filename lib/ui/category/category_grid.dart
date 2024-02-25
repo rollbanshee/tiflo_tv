@@ -20,44 +20,58 @@ class CategoryGrid extends StatelessWidget {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
 
-    return GridView.builder(
-        controller: providerCategory.controller,
-        physics: providerOnBoarding.sliding == 1
-            ? const NeverScrollableScrollPhysics()
-            : null,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12.h,
-            crossAxisSpacing: 24.w,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 2.45)),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          if (providerOnBoarding.sliding == 0) {
-            return _GridItem(
-              items: items,
-              index: index,
-            );
-          } else if (providerOnBoarding.sliding == 1) {
-            return providerCategory.indexItem1 == index
-                ? Container(
-                    padding: EdgeInsets.all(2.w),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 3, color: Colors.red),
-                        borderRadius: BorderRadius.circular(10.r)),
-                    child: Material(
+    return items.isEmpty
+        ? Center(
+            child: Text(
+              "Siyahı boşdur",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: const Color.fromRGBO(157, 157, 157, 1),
+                  fontFamily: AppFonts.poppins,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.sp),
+            ),
+          )
+        : GridView.builder(
+            controller: providerCategory.controller,
+            physics: providerOnBoarding.sliding == 1
+                ? const NeverScrollableScrollPhysics()
+                : null,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12.h,
+                crossAxisSpacing: 24.w,
+                childAspectRatio: MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height / 2.45)),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              if (providerOnBoarding.sliding == 0) {
+                return _GridItem(
+                  items: items,
+                  index: index,
+                );
+              } else if (providerOnBoarding.sliding == 1) {
+                return providerCategory.indexItem1 == index
+                    ? Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 3, color: Colors.red),
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Material(
+                            color: Colors.white,
+                            child: _GridItem(
+                              items: items,
+                              index: index,
+                            )))
+                    : Material(
+                        color: Colors.white,
                         child: _GridItem(
-                      items: items,
-                      index: index,
-                    )))
-                : Material(
-                    child: _GridItem(
-                    items: items,
-                    index: index,
-                  ));
-          }
-          return null;
-        });
+                          items: items,
+                          index: index,
+                        ));
+              }
+              return null;
+            });
   }
 }
 

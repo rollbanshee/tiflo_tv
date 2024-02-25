@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,39 +20,53 @@ class CategoriesGrid extends StatelessWidget {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
     final categories = providerOnBoarding.data;
-    return GridView.builder(
-        controller: providerCategories.controller,
-        physics: providerOnBoarding.sliding == 1
-            ? const NeverScrollableScrollPhysics()
-            : null,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12.h,
-            crossAxisSpacing: 24.w,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 2.45)),
-        itemCount: categories?.length,
-        itemBuilder: (context, index) {
-          if (providerOnBoarding.sliding == 0) {
-            return _GridItem(
-              categories: categories!,
-              index: index,
-            );
-          } else if (providerOnBoarding.sliding == 1) {
-            return providerCategories.indexItem1 == index
-                ? Container(
-                    padding: EdgeInsets.all(2.w),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 3, color: Colors.red),
-                        borderRadius: BorderRadius.circular(10.r)),
-                    child: Material(
-                        child:
-                            _GridItem(index: index, categories: categories!)))
-                : Material(
-                    child: _GridItem(index: index, categories: categories!));
-          }
-          return null;
-        });
+    return categories.isEmpty
+        ? Center(
+            child: Text(
+            "Siyahı boşdur",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: const Color.fromRGBO(157, 157, 157, 1),
+                fontFamily: AppFonts.poppins,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.sp),
+          ))
+        : GridView.builder(
+            controller: providerCategories.controller,
+            physics: providerOnBoarding.sliding == 1
+                ? const NeverScrollableScrollPhysics()
+                : null,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12.h,
+                crossAxisSpacing: 24.w,
+                childAspectRatio: MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height / 2.45)),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              if (providerOnBoarding.sliding == 0) {
+                return _GridItem(
+                  categories: categories,
+                  index: index,
+                );
+              } else if (providerOnBoarding.sliding == 1) {
+                return providerCategories.indexItem1 == index
+                    ? Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: BoxDecoration(
+                            // color: Colors.black,
+                            border: Border.all(width: 3, color: Colors.red),
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Material(
+                            color: Colors.white,
+                            child: _GridItem(
+                                index: index, categories: categories)))
+                    : Material(
+                        color: Colors.white,
+                        child: _GridItem(index: index, categories: categories));
+              }
+              return null;
+            });
   }
 }
 
@@ -102,7 +118,6 @@ class _GridItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                         onTap: () async {
                           await providerCategories.player.stop();
-                          // ignore: use_build_context_synchronously
                           Navigator.push(
                               context,
                               MaterialPageRoute(

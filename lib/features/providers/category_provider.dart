@@ -1,14 +1,13 @@
-import 'package:audioplayers/audioplayers.dart';
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoryProvider extends ChangeNotifier {
   int indexItem1 = 0;
   final player = AudioPlayer();
-  final playerBack = AudioPlayer();
-  final playerInitState = AudioPlayer();
-
   ScrollController controller = ScrollController();
-
   onSwipe(String swipe, int length) {
     if (swipe == "+") {
       indexItem1 >= length ? indexItem1 = 0 : indexItem1++;
@@ -19,43 +18,45 @@ class CategoryProvider extends ChangeNotifier {
   }
 
   initStateCategorySounds(items, audio) async {
-    List array = [
-      UrlSource(audio),
-      // AppSounds.navinfo,
-      UrlSource(items[indexItem1].audio),
-    ];
-
-    for (var item in array) {
-      if (item is String) {
-        await playerInitState.play(AssetSource(item));
-      } else if (item is UrlSource) {
-        await playerInitState.play(item);
-      }
-      await playerInitState.onPlayerComplete.first;
+    final playlist = ConcatenatingAudioSource(
+      children: [
+        AudioSource.uri(Uri.parse(audio)),
+        items.isEmpty
+            ? AudioSource.asset(AppSounds.emptyback)
+            : AudioSource.uri(Uri.parse(items[indexItem1].audio)),
+      ],
+    );
+    try {
+      await player.setAudioSource(playlist,
+          initialIndex: 0, initialPosition: Duration.zero);
+      await player.play();
+    } catch (e) {
+      print("$e /////////////////////////////////////////////");
     }
   }
 
   onPopSounds(items, categoryAudio) async {
-    List<UrlSource> sources = [
-      UrlSource(categoryAudio),
-      UrlSource(items[indexItem1].audio)
-    ];
+    final playlist = ConcatenatingAudioSource(children: [
+      AudioSource.uri(Uri.parse(categoryAudio)),
+      AudioSource.uri(Uri.parse(items[indexItem1].audio))
+    ]);
 
-    for (var item in sources) {
-      await playerBack.play(item);
-      await playerBack.onPlayerComplete.first;
+    try {
+      await player.setAudioSource(playlist,
+          initialIndex: 0, initialPosition: Duration.zero);
+      await player.play();
+    } catch (e) {
+      print("$e /////////////////////////////////////////////");
     }
   }
 
   itemsNameSounds(items) async {
     try {
       final audio = items[indexItem1].audio;
-      await playerInitState.stop();
-      await playerBack.stop();
       await player.stop();
-      await player.play(UrlSource(audio));
+      await player.setUrl(audio);
+      await player.play();
     } catch (e) {
-      // ignore: avoid_print
       print(e);
     }
   }

@@ -1,4 +1,4 @@
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -59,11 +59,14 @@ class OnBoardingPartBottom extends StatelessWidget {
                   ),
                 },
                 groupValue: providerOnBoarding.sliding,
-                onValueChanged: (int? value) {
+                onValueChanged: (int? value) async {
                   providerOnBoarding.onValueChanged(value);
                   providerOnBoarding.sliding == 1
-                      ? providerOnBoarding.player
-                          .play(AssetSource(AppSounds.entertocategories))
+                      ? [
+                          await providerOnBoarding.player
+                              .setAsset(AppSounds.entertocategories),
+                          await providerOnBoarding.player.play()
+                        ]
                       : providerOnBoarding.player.stop();
                 })
           ]),

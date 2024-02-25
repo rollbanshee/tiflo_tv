@@ -30,7 +30,7 @@ class HomeScreenCarousel extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: CachedNetworkImage(
-                  imageUrl: data?[0].items[index].image ?? "",
+                  imageUrl: data[0].items[index].image ?? "",
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Platform.isAndroid
                       ? Center(
@@ -54,7 +54,7 @@ class HomeScreenCarousel extends StatelessWidget {
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 1.25,
               child: Text(
-                data?[0].items[index].name,
+                data[0].items[index].name,
                 style: TextStyle(
                     fontFamily: AppFonts.poppins,
                     color: Colors.white,
@@ -84,7 +84,7 @@ class HomeScreenCarousel extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailScreen(
-                      id: data?[0].items[index].id,
+                      id: data[0].items[index].id,
                     ),
                   ),
                 );

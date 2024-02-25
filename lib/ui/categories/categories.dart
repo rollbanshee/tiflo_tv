@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -33,13 +35,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
     final providerCategories = context.read<CategoriesProvider>();
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
-      providerCategories.player.pause();
-      providerCategories.playerBack.pause();
-      providerCategories.playerInitState.pause();
-    } else if (state == AppLifecycleState.resumed) {
-      providerCategories.player.resume();
-      providerCategories.playerBack.resume();
-      providerCategories.playerInitState.resume();
+      providerCategories.player.stop();
     }
   }
 
@@ -52,8 +48,6 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        await providerCategories.playerBack.stop();
-        await providerCategories.playerInitState.stop();
         await providerCategories.player.stop();
         return true;
       },
@@ -78,25 +72,28 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                       padding: EdgeInsets.only(top: 16.h),
                       child: providerOnBoarding.sliding == 1
                           ? GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onDoubleTap: () async {
-                                await providerCategories.player.stop();
-                                await providerCategories.playerBack.stop();
-                                await providerCategories.playerInitState.stop();
-                                // ignore: use_build_context_synchronously
-                                bool? back = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Category(
-                                            categoryAudio: categories?[
+                                categories.isNotEmpty
+                                    ? await providerCategories.player.stop()
+                                    : null;
+                                bool? back = categories.isNotEmpty
+                                    ? await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Category(
+                                                categoryAudio: categories[
+                                                        providerCategories
+                                                            .indexItem1]
+                                                    .audio,
+                                                categoryIndex:
                                                     providerCategories
-                                                        .indexItem1]
-                                                .audio,
-                                            categoryIndex:
-                                                providerCategories.indexItem1,
-                                            categoryName: categories?[
-                                                    providerCategories
-                                                        .indexItem1]
-                                                .category_name)));
+                                                        .indexItem1,
+                                                categoryName: categories[
+                                                        providerCategories
+                                                            .indexItem1]
+                                                    .category_name)))
+                                    : false;
                                 if (back == true || back == null) {
                                   await providerCategories
                                       .onPopSounds(categories);
@@ -105,17 +102,14 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                               onVerticalDragEnd: (details) async {
                                 if (details.primaryVelocity! > 0) {
                                   await providerCategories.player.stop();
-                                  await providerCategories.playerBack.stop();
-                                  await providerCategories.playerInitState
-                                      .stop();
-                                  // ignore: use_build_context_synchronously
                                   Navigator.pop(context, true);
                                 }
                               },
                               onHorizontalDragEnd: (details) async {
-                                if (details.primaryVelocity! > 0) {
+                                if (details.primaryVelocity! > 0 &&
+                                    categories.isNotEmpty) {
                                   providerCategories.onSwipe(
-                                      "+", categories!.length - 1);
+                                      "+", categories.length - 1);
                                   await providerCategories
                                       .itemsNameSounds(categories);
                                   // final finalHeight =
@@ -130,9 +124,10 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                   //     : null;
                                 }
 
-                                if (details.primaryVelocity! < 0) {
+                                if (details.primaryVelocity! < 0 &&
+                                    categories.isNotEmpty) {
                                   providerCategories.onSwipe(
-                                      "-", categories!.length - 1);
+                                      "-", categories.length - 1);
                                   await providerCategories
                                       .itemsNameSounds(categories);
                                   // final finalHeight =

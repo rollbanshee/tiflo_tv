@@ -1,6 +1,6 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:tiflo_tv/features/domain/models/item/item.dart';
 import 'package:tiflo_tv/features/providers/detailscreen_provider.dart';
@@ -37,6 +37,13 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli>
         providerDetailScreen.videoListener(
             controller, dataDetailScreen.id, dataDetailScreen)();
       });
+
+    playerSesliYoutube.playerStateStream.listen((event) {
+      event.processingState == ProcessingState.completed
+          ? controller.play()
+          : null;
+    });
+
     super.initState();
   }
 
@@ -45,14 +52,13 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli>
     if (!mounted) return;
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
-      playerSesliYoutube.pause();
-    } else if (state == AppLifecycleState.resumed) {
-      playerSesliYoutube.resume();
+      playerSesliYoutube.stop();
     }
   }
 
   void playAudio() async {
-    await playerSesliYoutube.play(AssetSource(AppSounds.navinfovideo));
+    await playerSesliYoutube.setAsset(AppSounds.navinfovideo);
+    await playerSesliYoutube.play();
   }
 
   @override
@@ -97,7 +103,6 @@ class _YoutubePlayerSesliState extends State<YoutubePlayerSesli>
               progressColors: const ProgressBarColors(
                 playedColor: Colors.red,
                 handleColor: Colors.white,
-                // backgroundColor: Colors.white,
               ),
             ),
             builder: (context, player) => Scaffold(

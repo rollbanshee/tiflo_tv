@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,9 +42,7 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
-      providerOnBoarding.player.pause();
-    } else if (state == AppLifecycleState.resumed) {
-      providerOnBoarding.player.resume();
+      providerOnBoarding.player.stop();
     }
   }
 
@@ -54,17 +51,17 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     return GestureDetector(
-      onHorizontalDragEnd: (details) {
+      onHorizontalDragEnd: (details) async {
         if (details.primaryVelocity! > 0) {
           providerOnBoarding.onSwipe(1);
-          providerOnBoarding.player.stop();
-          providerOnBoarding.player
-              .play(AssetSource(AppSounds.entertocategories));
+          await providerOnBoarding.player.stop();
+          await providerOnBoarding.player.setAsset(AppSounds.entertocategories);
+          await providerOnBoarding.player.play();
         }
 
         if (details.primaryVelocity! < 0) {
           providerOnBoarding.onSwipe(0);
-          providerOnBoarding.player.stop();
+          await providerOnBoarding.player.stop();
         }
       },
       onDoubleTap: () async {
@@ -75,8 +72,8 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
               MaterialPageRoute(builder: (context) => const Categories()));
           if (back == true || back == null) {
             await providerOnBoarding.player.stop();
-            await providerOnBoarding.player
-                .play(AssetSource(AppSounds.mainpage));
+            await providerOnBoarding.player.setAsset(AppSounds.mainpage);
+            await providerOnBoarding.player.play();
           }
         }
       },
@@ -93,7 +90,8 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
               [
                 await providerOnBoarding.player.stop(),
                 await providerOnBoarding.player
-                    .play(AssetSource(AppSounds.entertocategories))
+                    .setAsset(AppSounds.entertocategories),
+                await providerOnBoarding.player.play()
               ]
             ],
       child: Scaffold(

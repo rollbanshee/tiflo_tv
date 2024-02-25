@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
@@ -11,7 +10,7 @@ class OnBoardingProvider extends ChangeNotifier {
   int sliding = 1;
   final player = AudioPlayer();
   List<dynamic> items = [];
-  List? data = [];
+  List data = [];
   bool isLoading = false;
   Future<void> getDataOnboarding(context, manager) async {
     if (!isLoading) {
@@ -36,7 +35,7 @@ class OnBoardingProvider extends ChangeNotifier {
           });
       await manager.emptyCache();
       data = await apiClient.getData();
-      items = data!.map((e) => e.items).expand((items) => items).toList();
+      items = data.map((e) => e.items).expand((items) => items).toList();
       isLoading = false;
       Navigator.pop(context);
       notifyListeners();
@@ -44,22 +43,20 @@ class OnBoardingProvider extends ChangeNotifier {
   }
 
   initStateOnBoardingSounds() async {
-    List array = [AppSounds.welcome, AppSounds.entertocategories];
-    await player.play(AssetSource(array[0]));
-    int i = 1;
-    player.onPlayerComplete.listen((_) async {
-      if (i < array.length) {
-        await player.play(AssetSource(array[i]));
-        i++;
-      }
-    });
+    final playlist = ConcatenatingAudioSource(children: [
+      AudioSource.asset(AppSounds.welcome),
+      AudioSource.asset(AppSounds.entertocategories),
+    ]);
+    await player.setAudioSource(playlist,
+        initialIndex: 0, initialPosition: Duration.zero);
+    await player.play();
   }
 
   Future<void> getData() async {
     if (!isLoading) {
       isLoading = true;
       data = await apiClient.getData();
-      items = data!.map((e) => e.items).expand((items) => items).toList();
+      items = data.map((e) => e.items).expand((items) => items).toList();
       isLoading = false;
       notifyListeners();
     }
