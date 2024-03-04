@@ -39,3 +39,6 @@ groups:
   - path: assets/sounds
     class_name: AppSounds
     types: [ .mp3, .wav ]
+  - path: assets/icon
+    class_name: AppIcon
+    types: [ .jpg ]

@@ -49,6 +49,7 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_cache_manager: ^3.3.1
   just_audio: ^0.9.36
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +63,12 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
   hive_generator: ^2.0.1
+  flutter_launcher_icons: ^0.13.1
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/favicon.jpg"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

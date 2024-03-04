@@ -39,6 +39,7 @@ class TifloTV extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ],
         child: MaterialApp(
+          title: "Tiflo TV",
           theme: ThemeData(
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.android: CupertinoPageTransitionsBuilder(),

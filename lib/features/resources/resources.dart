@@ -4,4 +4,6 @@ part 'app_svgs.dart';
 
 part 'app_sounds.dart';
 
+part 'app_icon.dart';
+
 part 'app_fonts.dart';

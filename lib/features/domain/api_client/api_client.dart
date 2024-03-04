@@ -40,4 +40,16 @@ class ApiClient {
       print(e);
     }
   }
+
+  Future<dynamic> getUpdateVersion() async {
+    const url = 'https://abasoft.az/tiflo_tv/get_update_version.php';
+    try {
+      final response = await dio.get(url);
+      final responseData = response.data;
+      return responseData;
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  }
 }

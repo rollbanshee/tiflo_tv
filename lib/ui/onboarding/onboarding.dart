@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +45,6 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
     }
   }
 
-  DefaultCacheManager manager = DefaultCacheManager();
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
@@ -67,7 +65,7 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
       onDoubleTap: () async {
         if (providerOnBoarding.sliding == 1) {
           await providerOnBoarding.player.stop();
-          await providerOnBoarding.getDataOnboarding(context, manager);
+          await providerOnBoarding.getDataOnboarding(context);
           bool? back = await Navigator.push(context,
               MaterialPageRoute(builder: (context) => const Categories()));
           if (back == true || back == null) {
@@ -80,7 +78,7 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
       onTap: () async => providerOnBoarding.sliding == 0
           ? [
               await providerOnBoarding.player.stop(),
-              await providerOnBoarding.getDataOnboarding(context, manager),
+              await providerOnBoarding.getDataOnboarding(context),
               Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoriesProvider extends ChangeNotifier {
@@ -22,7 +23,12 @@ class CategoriesProvider extends ChangeNotifier {
     final playlist = ConcatenatingAudioSource(children: [
       AudioSource.asset(AppSounds.categories),
       AudioSource.asset(AppSounds.navinfo),
-      AudioSource.uri(Uri.parse(categories[indexItem1].audio))
+      categories.isEmpty
+          ? AudioSource.asset(AppSounds.emptyback)
+          : AudioSource.uri(Uri.file(
+              (await manager.getFileFromCache(categories[indexItem1].audio))!
+                  .file
+                  .path))
     ]);
 
     try {
@@ -37,7 +43,10 @@ class CategoriesProvider extends ChangeNotifier {
   onPopSounds(categories) async {
     final playlist = ConcatenatingAudioSource(children: [
       AudioSource.asset(AppSounds.categories),
-      AudioSource.uri(Uri.parse(categories[indexItem1].audio))
+      AudioSource.uri(Uri.file(
+          (await manager.getFileFromCache(categories[indexItem1].audio))!
+              .file
+              .path))
     ]);
     try {
       await player.setAudioSource(playlist,
@@ -52,7 +61,7 @@ class CategoriesProvider extends ChangeNotifier {
     try {
       final audio = categories[indexItem1].audio;
       await player.stop();
-      await player.setUrl(audio);
+      await player.setUrl((await manager.getFileFromCache(audio))!.file.path);
       await player.play();
     } catch (e) {
       e;
