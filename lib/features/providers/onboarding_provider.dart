@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
@@ -17,7 +18,7 @@ class OnBoardingProvider extends ChangeNotifier {
   List data = [];
   List audio = [];
   String dataVersion = "";
-  SharedPreferences? prefs;
+  // SharedPreferences? prefs;
   bool isLoading = false;
 
   Future<void> getDataOnboarding(context) async {
@@ -41,7 +42,7 @@ class OnBoardingProvider extends ChangeNotifier {
                     radius: 15.r,
                   ));
           });
-      prefs = await SharedPreferences.getInstance();
+      // prefs = await SharedPreferences.getInstance();
       dataVersion = await apiClient.getUpdateVersion();
       data = await apiClient.getData();
       items = data.map((e) => e.items).expand((items) => items).toList();
@@ -49,9 +50,13 @@ class OnBoardingProvider extends ChangeNotifier {
       // ignore: avoid_function_literals_in_foreach_calls
       items.forEach((e) => audio.add(e.audio));
       data.forEach(((e) => audio.add(e.audio)));
-      if (prefs!.getString("version") != dataVersion) {
-        await prefs!.setString("version", dataVersion);
+      Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion.codeUnits);
+      FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
+      final cachedVersion = fileInfo?.file.readAsStringSync();
+      if (cachedVersion != dataVersion) {
+        // await prefs!.setString("version", dataVersion);
         await manager.emptyCache();
+        await manager.putFile("version.txt", dataVersionUint8);
         await Future.wait(
             audio.map((audioUrl) => manager.downloadFile(audioUrl)));
       }
