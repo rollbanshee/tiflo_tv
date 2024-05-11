@@ -65,7 +65,7 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
       onDoubleTap: () async {
         if (providerOnBoarding.sliding == 1) {
           await providerOnBoarding.player.stop();
-          await providerOnBoarding.getDataOnboarding(context);
+          // await providerOnBoarding.getDataOnboarding(context);
           bool? back = await Navigator.push(context,
               MaterialPageRoute(builder: (context) => const Categories()));
           if (back == true || back == null) {
@@ -85,12 +85,10 @@ class _OnboardingState extends State<Onboarding> with WidgetsBindingObserver {
                       builder: (context) => const BottomNavBar())),
             ]
           : [
-              [
-                await providerOnBoarding.player.stop(),
-                await providerOnBoarding.player
-                    .setAsset(AppSounds.entertocategories),
-                await providerOnBoarding.player.play()
-              ]
+              await providerOnBoarding.player.stop(),
+              await providerOnBoarding.player
+                  .setAsset(AppSounds.entertocategories),
+              await providerOnBoarding.player.play()
             ],
       child: Scaffold(
         backgroundColor: Colors.white,

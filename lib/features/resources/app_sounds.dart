@@ -3,6 +3,7 @@ part of 'resources.dart';
 class AppSounds {
   AppSounds._();
 
+  static const String audionone = 'assets/sounds/audionone.wav';
   static const String categories = 'assets/sounds/categories.wav';
   static const String emptyback = 'assets/sounds/emptyback.wav';
   static const String entertocategories = 'assets/sounds/entertocategories.wav';

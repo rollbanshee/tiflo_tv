@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:tiflo_tv/features/providers/homescreen_provider.dart';
+import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 
 class HomeScreenCarouselDots extends StatelessWidget {
   const HomeScreenCarouselDots({super.key});
@@ -9,10 +10,12 @@ class HomeScreenCarouselDots extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerHomeScreen = context.watch<HomeScreenProvider>();
+    final providerOnBoarding = context.watch<OnBoardingProvider>();
+    final sliders = providerOnBoarding.homeSliders;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 24.h),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < (sliders?.length ?? 4); i++)
           Container(
             margin: EdgeInsets.symmetric(horizontal: 3.w),
             width: 8.w,

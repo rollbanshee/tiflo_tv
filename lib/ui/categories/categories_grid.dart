@@ -19,8 +19,12 @@ class CategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerOnBoarding.data;
-    return categories.isEmpty
+    final categories = providerOnBoarding.categories;
+    double sizeHeight = 4.8;
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
+    final double itemWidth = size.width / 2;
+    return categories == null || categories.isEmpty
         ? Center(
             child: Text(
             "Siyahı boşdur",
@@ -40,8 +44,7 @@ class CategoriesGrid extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 12.h,
                 crossAxisSpacing: 24.w,
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 2.45)),
+                childAspectRatio: (itemWidth / itemHeight)),
             itemCount: categories.length,
             itemBuilder: (context, index) {
               if (providerOnBoarding.sliding == 0) {
@@ -79,7 +82,11 @@ class _GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
     final providerCategories = context.read<CategoriesProvider>();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = context.findRenderObject() as RenderBox;
+      final size = renderBox.size;
+      providerCategories.heightGridItem = size.height;
+    });
     return Column(
       children: [
         Stack(
@@ -90,17 +97,15 @@ class _GridItem extends StatelessWidget {
               child: CachedNetworkImage(
                 width: double.infinity,
                 height: 88.h,
-                imageUrl: categories[index].image ?? "",
+                imageUrl: categories[index].image != null
+                    ? providerOnBoarding.linkStart + categories[index].image
+                    : providerOnBoarding.imageError,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Platform.isAndroid
-                    ? Center(
-                        child: SizedBox(
-                        height: 24.h,
-                        width: 24.w,
-                        child: const CircularProgressIndicator(
+                    ? const Center(
+                        child: CircularProgressIndicator(
                             strokeWidth: 3,
-                            color: Color.fromRGBO(75, 184, 186, 1)),
-                      ))
+                            color: Color.fromRGBO(75, 184, 186, 1)))
                     : const Center(child: CupertinoActivityIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -137,16 +142,18 @@ class _GridItem extends StatelessWidget {
         SizedBox(
           height: 8.h,
         ),
-        Text(
-          categories[index].category_name,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).primaryColor),
-        )
+        LayoutBuilder(builder: (context, constraints) {
+          return Text(
+            categories[index].category_name,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: constraints.maxWidth > 250 ? 10.sp : 12.sp,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).primaryColor),
+          );
+        })
       ],
     );
   }

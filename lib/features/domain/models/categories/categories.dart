@@ -1,28 +1,28 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tiflo_tv/features/domain/models/item/item.dart';
 
 part 'categories.g.dart';
 
-@HiveType(typeId: 0)
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 class Categories {
-  @HiveField(0)
-  // ignore: non_constant_identifier_names
+  @JsonKey(name: 'id')
   final int category_id;
-  @HiveField(1)
-  // ignore: non_constant_identifier_names
+  @JsonKey(name: 'name')
   final String category_name;
-  @HiveField(2)
-  final String image;
-  @HiveField(3)
-  final String audio;
-  @HiveField(4)
-  final List<Item> items;
+  @JsonKey(name: 'image')
+  final String? image;
+  @JsonKey(name: 'sound_file')
+  final List? audio;
 
-  Categories(
-      this.category_id, this.category_name, this.image, this.audio, this.items);
   factory Categories.fromJson(Map<String, dynamic> json) =>
       _$CategoriesFromJson(json);
+
+  Categories(
+    this.category_id,
+    this.category_name,
+    this.image,
+    this.audio,
+  );
   Map<String, dynamic> toJson() => _$CategoriesToJson(this);
 }

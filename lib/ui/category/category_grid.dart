@@ -12,15 +12,18 @@ import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen.dart';
 
 class CategoryGrid extends StatelessWidget {
-  final List<dynamic> items;
+  final List<dynamic>? items;
   const CategoryGrid({required this.items, super.key});
 
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
-
-    return items.isEmpty
+    double sizeHeight = 4.8;
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
+    final double itemWidth = size.width / 2;
+    return items == null || items!.isEmpty
         ? Center(
             child: Text(
               "Siyahı boşdur",
@@ -38,12 +41,12 @@ class CategoryGrid extends StatelessWidget {
                 ? const NeverScrollableScrollPhysics()
                 : null,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12.h,
-                crossAxisSpacing: 24.w,
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 2.45)),
-            itemCount: items.length,
+              crossAxisCount: 2,
+              mainAxisSpacing: 12.h,
+              crossAxisSpacing: 24.w,
+              childAspectRatio: (itemWidth / itemHeight),
+            ),
+            itemCount: items?.length,
             itemBuilder: (context, index) {
               if (providerOnBoarding.sliding == 0) {
                 return _GridItem(
@@ -77,12 +80,18 @@ class CategoryGrid extends StatelessWidget {
 
 class _GridItem extends StatelessWidget {
   final int index;
-  final List<dynamic> items;
+  final List<dynamic>? items;
   const _GridItem({required this.items, required this.index});
 
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
+    final providerCategory = context.watch<CategoryProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = context.findRenderObject() as RenderBox;
+      final size = renderBox.size;
+      providerCategory.heightGridItem = size.height;
+    });
     return Column(
       children: [
         Stack(
@@ -94,16 +103,14 @@ class _GridItem extends StatelessWidget {
                 width: double.infinity,
                 height: 88.h,
                 fit: BoxFit.cover,
-                imageUrl: items[index].image ?? "",
+                imageUrl: items?[index].image != null
+                    ? providerOnBoarding.linkStart + items![index].image
+                    : providerOnBoarding.imageError,
                 placeholder: (context, url) => Platform.isAndroid
-                    ? Center(
-                        child: SizedBox(
-                        height: 24.h,
-                        width: 24.w,
-                        child: const CircularProgressIndicator(
-                            strokeWidth: 6,
-                            color: Color.fromRGBO(75, 184, 186, 1)),
-                      ))
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: Color.fromRGBO(75, 184, 186, 1)))
                     : const Center(child: CupertinoActivityIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -129,7 +136,7 @@ class _GridItem extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailScreen(
-                                id: items[index].id,
+                                id: items?[index].id,
                               ),
                             ),
                           );
@@ -143,15 +150,17 @@ class _GridItem extends StatelessWidget {
         SizedBox(
           height: 8.h,
         ),
-        Text(
-          items[index].name,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).primaryColor),
+        LayoutBuilder(
+          builder: (context, constraints) => Text(
+            items?[index].name,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: constraints.maxWidth > 250 ? 10.sp : 12.sp,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).primaryColor),
+          ),
         ),
       ],
     );

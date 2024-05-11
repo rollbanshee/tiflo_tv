@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
@@ -5,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
+import 'package:tiflo_tv/features/domain/models/about_us/about_us.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 DefaultCacheManager manager = DefaultCacheManager();
@@ -14,11 +16,17 @@ DefaultCacheManager manager = DefaultCacheManager();
 class OnBoardingProvider extends ChangeNotifier {
   int sliding = 1;
   final player = AudioPlayer();
-  List<dynamic> items = [];
-  List data = [];
+  final String linkStart = 'https://tiflotv.abasoft.dev/storage/';
+  final String imageError =
+      'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png';
+  List? allLessons;
+  List? homeSliders;
+  List? homeLessons;
+  List? categories;
+  AboutUs? info;
+  List? categoriesIdWithItems = [];
   List audio = [];
-  String dataVersion = "";
-  // SharedPreferences? prefs;
+  String? dataVersion = "";
   bool isLoading = false;
 
   Future<void> getDataOnboarding(context) async {
@@ -29,11 +37,11 @@ class OnBoardingProvider extends ChangeNotifier {
           context: context,
           builder: (context) {
             return Platform.isAndroid
-                ? Center(
+                ? const Center(
                     child: SizedBox(
-                    height: 32.h,
-                    width: 32.w,
-                    child: const CircularProgressIndicator(
+                    height: 32,
+                    width: 32,
+                    child: CircularProgressIndicator(
                         strokeWidth: 3, color: Colors.white),
                   ))
                 : Center(
@@ -42,27 +50,43 @@ class OnBoardingProvider extends ChangeNotifier {
                     radius: 15.r,
                   ));
           });
-      // prefs = await SharedPreferences.getInstance();
-      dataVersion = await apiClient.getUpdateVersion();
-      data = await apiClient.getData();
-      items = data.map((e) => e.items).expand((items) => items).toList();
-      audio.clear();
-      // ignore: avoid_function_literals_in_foreach_calls
-      items.forEach((e) => audio.add(e.audio));
-      data.forEach(((e) => audio.add(e.audio)));
-      Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion.codeUnits);
-      FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
-      final cachedVersion = fileInfo?.file.readAsStringSync();
-      if (cachedVersion != dataVersion) {
-        // await prefs!.setString("version", dataVersion);
-        await manager.emptyCache();
-        await manager.putFile("version.txt", dataVersionUint8);
-        await Future.wait(
-            audio.map((audioUrl) => manager.downloadFile(audioUrl)));
-      }
+      await getAllData();
       isLoading = false;
       Navigator.pop(context);
       notifyListeners();
+    }
+  }
+
+  Future<void> getAllData() async {
+    final getHome = await apiClient.getHome();
+    info = await apiClient.getInfo();
+    homeSliders = getHome.sliders;
+    homeLessons = getHome.lessons;
+  }
+
+  Future<void> versionCheck() async {
+    allLessons = await apiClient.getAllItems();
+    final getCaregories = await apiClient.getCategories();
+    dataVersion = getCaregories['version'].toString();
+    categories = getCaregories['categories'];
+    for (var e in categories!) {
+      var items = await apiClient.getCategoryItems(e.category_id);
+      categoriesIdWithItems?.add(items);
+    }
+    Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
+    FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
+    final cachedVersion = fileInfo?.file.readAsStringSync();
+    if (cachedVersion != dataVersion) {
+      await manager.emptyCache();
+      await manager.putFile("version.txt", dataVersionUint8);
+      categories?.forEach((e) => e.audio != null && e.audio.isNotEmpty
+          ? audio.add(linkStart + e.audio[0]['download_link'])
+          : null);
+      allLessons?.forEach((e) => e.audio != null && e.audio.isNotEmpty
+          ? audio.add(linkStart + e.audio[0]['download_link'])
+          : null);
+      await Future.wait(
+          audio.map((audioUrl) => manager.downloadFile(audioUrl)));
     }
   }
 
@@ -79,8 +103,7 @@ class OnBoardingProvider extends ChangeNotifier {
   Future<void> getData() async {
     if (!isLoading) {
       isLoading = true;
-      data = await apiClient.getData();
-      items = data.map((e) => e.items).expand((items) => items).toList();
+      await getAllData();
       isLoading = false;
       notifyListeners();
     }

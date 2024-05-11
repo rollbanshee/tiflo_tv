@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/onboarding/onboarding.dart';
 
@@ -17,10 +19,12 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
         overlays: SystemUiOverlay.values);
-    Future.delayed(const Duration(seconds: 2), () {
-      // _scale();
-      Navigator.pushReplacement(context, _createRoute());
-    });
+    final providerOnBoarding = context.read<OnBoardingProvider>();
+    // _scale();
+    providerOnBoarding
+        .versionCheck()
+        .whenComplete(() => Navigator.pushReplacement(context, _createRoute()));
+
     super.initState();
   }
 

@@ -1,55 +1,52 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'item.dart';
+part of 'items.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ItemAdapter extends TypeAdapter<Item> {
+class ItemsAdapter extends TypeAdapter<Items> {
   @override
-  final int typeId = 1;
+  final int typeId = 0;
 
   @override
-  Item read(BinaryReader reader) {
+  Items read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Item(
+    return Items(
       fields[1] as int?,
-      fields[2] as int?,
+      fields[2] as String?,
       fields[3] as String?,
       fields[4] as String?,
       fields[5] as String?,
-      fields[6] as String?,
+      (fields[6] as List?)?.cast<dynamic>(),
       fields[7] as String?,
-      fields[8] as int?,
-      fields[9] as String?,
+      fields[8] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Item obj) {
+  void write(BinaryWriter writer, Items obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(8)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.category_id)
-      ..writeByte(3)
       ..write(obj.name)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.link)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.description)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.image)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.audio)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.views)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.date);
   }
 
@@ -59,7 +56,7 @@ class ItemAdapter extends TypeAdapter<Item> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ItemAdapter &&
+      other is ItemsAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -68,26 +65,24 @@ class ItemAdapter extends TypeAdapter<Item> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Item _$ItemFromJson(Map<String, dynamic> json) => Item(
+Items _$ItemsFromJson(Map<String, dynamic> json) => Items(
       json['id'] as int?,
-      json['category_id'] as int?,
       json['name'] as String?,
-      json['link'] as String?,
+      json['video_link'] as String?,
       json['description'] as String?,
       json['image'] as String?,
-      json['audio'] as String?,
-      json['views'] as int?,
-      json['date'] as String?,
+      json['sound_file'] as List<dynamic>?,
+      json['view_count'] as String?,
+      json['created_at'] as String?,
     );
 
-Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+Map<String, dynamic> _$ItemsToJson(Items instance) => <String, dynamic>{
       'id': instance.id,
-      'category_id': instance.category_id,
       'name': instance.name,
-      'link': instance.link,
+      'video_link': instance.link,
       'description': instance.description,
       'image': instance.image,
-      'audio': instance.audio,
-      'views': instance.views,
-      'date': instance.date,
+      'sound_file': instance.audio,
+      'view_count': instance.views,
+      'created_at': instance.date,
     };

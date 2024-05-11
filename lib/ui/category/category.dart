@@ -14,7 +14,7 @@ import 'package:tiflo_tv/ui/youtube_player_sesli.dart';
 class Category extends StatefulWidget {
   final int categoryIndex;
   final String categoryName;
-  final String categoryAudio;
+  final List? categoryAudio;
 
   const Category(
       {super.key,
@@ -35,7 +35,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
     providerCategory.indexItem1 = 0;
     if (providerOnBoarding.sliding == 1) {
       providerCategory.initStateCategorySounds(
-          providerOnBoarding.data[widget.categoryIndex].items,
+          providerOnBoarding.categoriesIdWithItems![widget.categoryIndex],
           widget.categoryAudio);
     }
     super.initState();
@@ -55,7 +55,8 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerCategory = context.watch<CategoryProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
-    final items = providerOnBoarding.data[widget.categoryIndex].items;
+    final items =
+        providerOnBoarding.categoriesIdWithItems?[widget.categoryIndex];
     // ignore: deprecated_member_use
     return WillPopScope(
         onWillPop: () async {
@@ -81,6 +82,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                 width: 24.w,
                               ))
                           : Material(
+                              color: Colors.transparent,
                               child: InkWell(
                                 customBorder: const CircleBorder(),
                                 onTap: () {
@@ -161,36 +163,41 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                       items.isNotEmpty) {
                                     providerCategory.onSwipe(
                                         "+", items.length - 1);
+                                    final finalHeight =
+                                        (providerCategory.indexItem1 / 2) *
+                                            providerCategory.heightGridItem;
+                                    providerCategory.indexItem1 % 2 == 0 ||
+                                            providerCategory.indexItem1 == 0
+                                        ? providerCategory.controller.animateTo(
+                                            finalHeight,
+                                            duration: const Duration(
+                                                milliseconds: 200),
+                                            curve: Curves.linear)
+                                        : null;
                                     await providerCategory
                                         .itemsNameSounds(items);
-                                    // final finalHeight =
-                                    //     (providerCategory.indexItem1 / 2) *
-                                    //         165.2.h;
-                                    // providerCategory.indexItem1 % 2 == 0
-                                    //     ? providerCategory.controller.animateTo(
-                                    //         finalHeight,
-                                    //         duration:
-                                    //             const Duration(milliseconds: 200),
-                                    //         curve: Curves.linear)
-                                    //     : null;
                                   }
 
                                   if (details.primaryVelocity! < 0 &&
                                       items.isNotEmpty) {
                                     providerCategory.onSwipe(
                                         "-", items.length - 1);
+
+                                    final finalHeight =
+                                        ((providerCategory.indexItem1 - 1) /
+                                                2) *
+                                            providerCategory.heightGridItem;
+                                    providerCategory.indexItem1 % 2 != 0 ||
+                                            providerCategory.indexItem1 ==
+                                                items.length
+                                        ? providerCategory.controller.animateTo(
+                                            finalHeight,
+                                            duration: const Duration(
+                                                milliseconds: 200),
+                                            curve: Curves.linear)
+                                        : null;
                                     await providerCategory
                                         .itemsNameSounds(items);
-                                    // final finalHeight =
-                                    //     ((providerCategory.indexItem1 - 1) / 2) *
-                                    //         165.2.h;
-                                    // providerCategory.indexItem1 % 2 != 0
-                                    //     ? providerCategory.controller.animateTo(
-                                    //         finalHeight,
-                                    //         duration:
-                                    //             const Duration(milliseconds: 100),
-                                    //         curve: Curves.linear)
-                                    //     : null;
                                   }
                                 },
                                 child: CategoryGrid(items: items))

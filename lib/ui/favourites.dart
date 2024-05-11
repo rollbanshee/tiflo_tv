@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tiflo_tv/features/providers/detailscreen_provider.dart';
+import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen.dart';
 
@@ -16,6 +17,7 @@ class Favourites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerDetailScreen = context.watch<DetailScreenProvider>();
+    final providerOnBoarding = context.read<OnBoardingProvider>();
     final box = providerDetailScreen.box;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -51,7 +53,9 @@ class Favourites extends StatelessWidget {
                                 itemCount: box.keys.length,
                                 itemBuilder: (context, index) {
                                   final box = providerDetailScreen.box;
-                                  final key = box.keys.toList()[index];
+                                  final keys = box.keys.toList();
+                                  final key = keys[index];
+                                  final element = box.get(key);
                                   return Padding(
                                     padding: EdgeInsets.only(
                                         top: index != 0 ? 16.h : 0),
@@ -67,34 +71,29 @@ class Favourites extends StatelessWidget {
                                                 height: 184.h,
                                                 width: double.infinity,
                                                 child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        box.get(key).image ??
-                                                            "",
+                                                    imageUrl: element.image != null
+                                                        ? providerOnBoarding
+                                                                .linkStart +
+                                                            element.image
+                                                        : providerOnBoarding
+                                                            .imageError,
                                                     fit: BoxFit.cover,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Platform.isAndroid
-                                                            ? Center(
-                                                                child: SizedBox(
-                                                                height: 36.h,
-                                                                width: 36.w,
-                                                                child: const CircularProgressIndicator(
-                                                                    strokeWidth:
-                                                                        3,
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            75,
-                                                                            184,
-                                                                            186,
-                                                                            1)),
-                                                              ))
-                                                            : const Center(
-                                                                child:
-                                                                    CupertinoActivityIndicator()),
+                                                    placeholder: (context, url) => Platform
+                                                            .isAndroid
+                                                        ? const Center(
+                                                            child: CircularProgressIndicator(
+                                                                strokeWidth: 3,
+                                                                color: Color.fromRGBO(
+                                                                    75,
+                                                                    184,
+                                                                    186,
+                                                                    1)))
+                                                        : const Center(
+                                                            child:
+                                                                CupertinoActivityIndicator()),
                                                     errorWidget:
                                                         (context, url, error) =>
-                                                            const Icon(
-                                                                Icons.error)),
+                                                            const Icon(Icons.error)),
                                               ),
                                             ),
                                             SvgPicture.asset(
@@ -116,9 +115,7 @@ class Favourites extends StatelessWidget {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               DetailScreen(
-                                                                id: box
-                                                                    .get(key)
-                                                                    .id,
+                                                                id: element.id,
                                                               ))),
                                                 ),
                                               ),
@@ -133,7 +130,7 @@ class Favourites extends StatelessWidget {
                                               BorderRadius.circular(8.r),
                                           onTap: () {
                                             providerDetailScreen
-                                                .deleteFavourite(box.get(key));
+                                                .deleteFavourite(element);
                                           },
                                           child: Padding(
                                             padding: EdgeInsets.all(6.w),
@@ -146,7 +143,7 @@ class Favourites extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    box.get(key).name,
+                                                    element.name,
                                                     style: TextStyle(
                                                         fontFamily:
                                                             AppFonts.poppins,

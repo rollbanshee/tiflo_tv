@@ -15,9 +15,12 @@ class HomeScreenGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final items = providerOnBoarding.items;
-
-    return items.isEmpty
+    final lessons = providerOnBoarding.homeLessons;
+    double sizeHeight = 4.8;
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
+    final double itemWidth = size.width / 2;
+    return lessons == null
         ? Center(
             child: Text(
               "Siyahı boşdur",
@@ -34,11 +37,10 @@ class HomeScreenGrid extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 12.h,
                 crossAxisSpacing: 24.w,
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 2.5)),
-            itemCount: items.length,
+                childAspectRatio: (itemWidth / itemHeight)),
+            itemCount: lessons.length,
             itemBuilder: (context, index) => _GridItem(
-                  items: items,
+                  items: lessons,
                   index: index,
                 ));
   }
@@ -51,6 +53,8 @@ class _GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final providerOnBoarding = context.read<OnBoardingProvider>();
+
     return Column(
       children: [
         Stack(
@@ -61,17 +65,15 @@ class _GridItem extends StatelessWidget {
               child: CachedNetworkImage(
                 width: double.infinity,
                 height: 88.h,
-                imageUrl: items[index].image ?? "",
+                imageUrl: items[index].image != null
+                    ? providerOnBoarding.linkStart + items[index].image
+                    : providerOnBoarding.imageError,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Platform.isAndroid
-                    ? Center(
-                        child: SizedBox(
-                        height: 24.h,
-                        width: 24.w,
-                        child: const CircularProgressIndicator(
-                            strokeWidth: 6,
-                            color: Color.fromRGBO(75, 184, 186, 1)),
-                      ))
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: Color.fromRGBO(75, 184, 186, 1)))
                     : const Center(child: CupertinoActivityIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -109,16 +111,18 @@ class _GridItem extends StatelessWidget {
         SizedBox(
           height: 8.h,
         ),
-        Text(
-          items[index].name,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontSize: 12.sp,
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.w600),
-        ),
+        LayoutBuilder(builder: (context, constraints) {
+          return Text(
+            items[index].name,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: constraints.maxWidth > 250 ? 10.sp : 12.sp,
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w600),
+          );
+        }),
       ],
     );
   }

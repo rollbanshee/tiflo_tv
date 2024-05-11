@@ -18,7 +18,8 @@ class DetailScreenFavButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 16.h),
       child: InkWell(
         onTap: () {
-          box.values.toList().any((e) => e.id == dataDetailScreen.id)
+          final values = box.values.toList();
+          values.any((e) => e.id == dataDetailScreen.id)
               ? providerDetailScreen.deleteFavourite(dataDetailScreen)
               : providerDetailScreen.addFavourite(dataDetailScreen);
           // box.clear();

@@ -19,9 +19,9 @@ class HomeScreenCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerHomeScreen = context.watch<HomeScreenProvider>();
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final data = providerOnBoarding.data;
+    final sliders = providerOnBoarding.homeSliders;
     return CarouselSlider.builder(
-      itemCount: 4,
+      itemCount: sliders?.length ?? 4,
       itemBuilder: (context, index, realIndex) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Stack(children: [
@@ -30,18 +30,19 @@ class HomeScreenCarousel extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: CachedNetworkImage(
-                  imageUrl: data[0].items[index].image ?? "",
+                  imageUrl: sliders == null
+                      ? 'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png'
+                      : sliders[index].image != null
+                          ? providerOnBoarding.linkStart +
+                              sliders[index].image
+                          : providerOnBoarding.imageError,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Platform.isAndroid
-                      ? Center(
+                      ? const Center(
                           child: Center(
-                              child: SizedBox(
-                            height: 36.h,
-                            width: 36.w,
-                            child: const CircularProgressIndicator(
-                                strokeWidth: 3,
-                                color: Color.fromRGBO(75, 184, 186, 1)),
-                          )),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: Color.fromRGBO(75, 184, 186, 1))),
                         )
                       : const Center(child: CupertinoActivityIndicator()),
                   errorWidget: (context, url, error) =>
@@ -54,7 +55,7 @@ class HomeScreenCarousel extends StatelessWidget {
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 1.25,
               child: Text(
-                data[0].items[index].name,
+                sliders == null ? '' : sliders[index].name,
                 style: TextStyle(
                     fontFamily: AppFonts.poppins,
                     color: Colors.white,
@@ -80,14 +81,16 @@ class HomeScreenCarousel extends StatelessWidget {
               highlightColor: Colors.white24,
               borderRadius: BorderRadius.circular(8.r),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailScreen(
-                      id: data[0].items[index].id,
-                    ),
-                  ),
-                );
+                sliders == null
+                    ? null
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            id: sliders[index].id,
+                          ),
+                        ),
+                      );
               },
             ),
           ),

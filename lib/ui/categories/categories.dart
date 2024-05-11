@@ -24,7 +24,8 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     providerCategories.indexItem1 = 0;
     if (providerOnBoarding.sliding == 1) {
-      providerCategories.initStateCategoriesSounds(providerOnBoarding.data);
+      providerCategories
+          .initStateCategoriesSounds(providerOnBoarding.categories);
     }
     super.initState();
   }
@@ -43,7 +44,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerOnBoarding.data;
+    final categories = providerOnBoarding.categories;
 
     // ignore: deprecated_member_use
     return WillPopScope(
@@ -74,7 +75,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                           ? GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onDoubleTap: () async {
-                                categories.isNotEmpty
+                                categories!.isNotEmpty
                                     ? await providerCategories.player.stop()
                                     : null;
                                 bool? back = categories.isNotEmpty
@@ -107,40 +108,43 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                               },
                               onHorizontalDragEnd: (details) async {
                                 if (details.primaryVelocity! > 0 &&
-                                    categories.isNotEmpty) {
+                                    categories!.isNotEmpty) {
                                   providerCategories.onSwipe(
                                       "+", categories.length - 1);
+                                  final finalHeight =
+                                      (providerCategories.indexItem1 / 2) *
+                                          providerCategories.heightGridItem;
+                                  providerCategories.indexItem1 % 2 == 0 ||
+                                          providerCategories.indexItem1 == 0
+                                      ? providerCategories.controller.animateTo(
+                                          finalHeight,
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          curve: Curves.linear)
+                                      : null;
                                   await providerCategories
                                       .itemsNameSounds(categories);
-                                  // final finalHeight =
-                                  //     (providerCategories.indexItem1 / 2) *
-                                  //         165.2.h;
-                                  // providerCategories.indexItem1 % 2 == 0
-                                  //     ? providerCategories.controller.animateTo(
-                                  //         finalHeight,
-                                  //         duration:
-                                  //             const Duration(milliseconds: 200),
-                                  //         curve: Curves.linear)
-                                  //     : null;
                                 }
 
                                 if (details.primaryVelocity! < 0 &&
-                                    categories.isNotEmpty) {
+                                    categories!.isNotEmpty) {
                                   providerCategories.onSwipe(
                                       "-", categories.length - 1);
+                                  final finalHeight =
+                                      ((providerCategories.indexItem1 - 1) /
+                                              2) *
+                                          providerCategories.heightGridItem;
+                                  providerCategories.indexItem1 % 2 != 0 ||
+                                          providerCategories.indexItem1 ==
+                                              categories.length
+                                      ? providerCategories.controller.animateTo(
+                                          finalHeight,
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          curve: Curves.linear)
+                                      : null;
                                   await providerCategories
                                       .itemsNameSounds(categories);
-                                  // final finalHeight =
-                                  //     ((providerCategories.indexItem1 - 1) /
-                                  //             2) *
-                                  //         165.2.h;
-                                  // providerCategories.indexItem1 % 2 != 0
-                                  //     ? providerCategories.controller.animateTo(
-                                  //         finalHeight,
-                                  //         duration:
-                                  //             const Duration(milliseconds: 100),
-                                  //         curve: Curves.linear)
-                                  //     : null;
                                 }
                               },
                               child: const CategoriesGrid())

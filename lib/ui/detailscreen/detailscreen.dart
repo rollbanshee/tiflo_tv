@@ -1,16 +1,19 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:tiflo_tv/features/domain/models/item/item.dart';
+import 'package:tiflo_tv/features/domain/models/items/items.dart';
 import 'package:tiflo_tv/features/providers/detailscreen_provider.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen_fav_button.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:html/parser.dart';
 
 class DetailScreen extends StatefulWidget {
   final int id;
@@ -20,8 +23,8 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late YoutubePlayerController _controller;
-  late Item _dataDetailScreen;
+  late YoutubePlayerController controller;
+  late Items dataDetailScreen;
 
   @override
   void initState() {
@@ -29,16 +32,16 @@ class _DetailScreenState extends State<DetailScreen> {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerDetailScreen = context.read<DetailScreenProvider>();
     providerDetailScreen.isGetViewsCalled = false;
-    _dataDetailScreen = providerOnBoarding.items
+    dataDetailScreen = providerOnBoarding.allLessons!
         .firstWhere((item) => item.id == widget.id, orElse: () => null);
-    _controller = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(_dataDetailScreen.link!)!,
+    controller = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(dataDetailScreen.link!)!,
       flags: const YoutubePlayerFlags(
         autoPlay: false,
       ),
     )..addListener(() {
         providerDetailScreen.videoListener(
-            _controller, _dataDetailScreen.id, _dataDetailScreen)();
+            controller, dataDetailScreen.id, dataDetailScreen)();
       });
 
     super.initState();
@@ -46,19 +49,20 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   void deactivate() {
-    _controller.pause();
+    controller.pause();
     super.deactivate();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final providerDetailScreen = context.watch<DetailScreenProvider>();
+    final String? description = parse(dataDetailScreen.description).body?.text;
     return YoutubePlayerBuilder(
       onExitFullScreen: () {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
@@ -66,7 +70,7 @@ class _DetailScreenState extends State<DetailScreen> {
       },
       onEnterFullScreen: () {},
       player: YoutubePlayer(
-        controller: _controller,
+        controller: controller,
         progressColors: const ProgressBarColors(
           playedColor: Colors.red,
           handleColor: Colors.white,
@@ -76,11 +80,12 @@ class _DetailScreenState extends State<DetailScreen> {
         backgroundColor: Colors.white,
         body: SafeArea(
             child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+          padding: EdgeInsets.all(16.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Material(
+                color: Colors.transparent,
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   onTap: () {
@@ -110,7 +115,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     children: [
                       DetailScreenPlayer(player: player),
                       Text(
-                        _dataDetailScreen.name ?? "",
+                        dataDetailScreen.name ?? "",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16.sp,
@@ -121,7 +126,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         height: 8.h,
                       ),
                       Text(
-                        "${providerDetailScreen.formatDateTime(_dataDetailScreen.date, "az_AZ")} | ${_dataDetailScreen.views.toString()}",
+                        "${providerDetailScreen.formatDateTime(dataDetailScreen.date, "az_AZ")} | ${dataDetailScreen.views}",
                         style: TextStyle(
                             color: const Color.fromRGBO(199, 199, 199, 1),
                             fontSize: 12.sp,
@@ -129,10 +134,10 @@ class _DetailScreenState extends State<DetailScreen> {
                             fontWeight: FontWeight.w400),
                       ),
                       DetailScreenFavButton(
-                        dataDetailScreen: _dataDetailScreen,
+                        dataDetailScreen: dataDetailScreen,
                       ),
                       Text(
-                        _dataDetailScreen.description ?? "",
+                        description ?? "",
                         style: TextStyle(
                             fontFamily: AppFonts.poppins,
                             fontSize: 14.sp,

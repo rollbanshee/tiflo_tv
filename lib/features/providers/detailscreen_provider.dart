@@ -8,39 +8,47 @@ class DetailScreenProvider extends ChangeNotifier {
   final box = Hive.box("favourites");
   bool isGetViewsCalled = false;
   int elapsedTime = 0;
-
-  VoidCallback videoListener(controller, id, item) {
+  VoidCallback videoListener(controller, id, dataDetailScreen) {
     return () async {
       if (controller.value.isPlaying && !isGetViewsCalled) {
         isGetViewsCalled = true;
-        await getViews(id, item);
+      await apiClient.postViewIncrement(id);
         notifyListeners();
       }
     };
   }
 
-  Future<dynamic> getViews(id, item) async {
-    item.views = await apiClient.getViewsIncrement(id);
-    notifyListeners();
-  }
-
   Future<void> addFavourite(item) async {
-    final int count = box.length;
+    int count = 0;
+    for (int key in box.keys) {
+      if (key >= count) {
+        count = key + 1;
+      }
+    }
     box.put(count, item);
     notifyListeners();
   }
 
   Future<void> deleteFavourite(item) async {
-    final key = box.keys.toList().firstWhere(
-          (e) => box.get(e).id == item.id,
-          orElse: () => null,
-        );
-    box.delete(key);
-    notifyListeners();
+    final keys = box.keys;
+    final key = keys.firstWhere(
+      (e) => box.get(e) == item,
+      orElse: () => null,
+    );
+    if (key != null) {
+      box.delete(key);
+      for (int k in keys) {
+        if (k > key) {
+          box.put(k - 1, box.get(k));
+          box.delete(k);
+        }
+      }
+      notifyListeners();
+    }
   }
 
   String formatDateTime(dateTimeString, String locale) {
-    final inputFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    final inputFormat = DateFormat("yyyy-MM-ddTHH:mm:ss");
     final dateTime = inputFormat.parse(dateTimeString);
 
     final outputFormat = DateFormat("dd MMMM y", locale);
