@@ -39,8 +39,8 @@ class OnBoardingProvider extends ChangeNotifier {
             return Platform.isAndroid
                 ? const Center(
                     child: SizedBox(
-                    height: 32,
-                    width: 32,
+                    height: 50,
+                    width: 50,
                     child: CircularProgressIndicator(
                         strokeWidth: 3, color: Colors.white),
                   ))

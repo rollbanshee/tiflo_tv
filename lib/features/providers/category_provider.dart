@@ -6,7 +6,6 @@ import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.abasoft.dev/storage/';
-  late double heightGridItem;
   int indexItem1 = 0;
   final player = AudioPlayer();
   ScrollController controller = ScrollController();
@@ -21,8 +20,10 @@ class CategoryProvider extends ChangeNotifier {
 
   initStateCategorySounds(items, audio) async {
     final check1 = audio != null && audio.isNotEmpty;
-    final check2 =
-        items[indexItem1].audio != null && items[indexItem1].audio.isNotEmpty;
+    final check2 = items.length > 0
+        ? (items[indexItem1].audio != null &&
+            items?[indexItem1].audio.isNotEmpty)
+        : false;
 
     final audioLink1 = check1 ? linkStart + audio[0]['download_link'] : '';
     final audioLink2 =
@@ -37,6 +38,9 @@ class CategoryProvider extends ChangeNotifier {
       audioSources.add(AudioSource.asset(AppSounds.emptyback));
     } else if (audio1 != null) {
       audioSources.add(AudioSource.uri(Uri.file(audio1.file.path)));
+      audio2 != null
+          ? audioSources.add(AudioSource.uri(Uri.file(audio2.file.path)))
+          : audioSources.add(AudioSource.asset(AppSounds.audionone));
     } else if (audio2 != null) {
       audioSources.add(AudioSource.uri(Uri.file(audio2.file.path)));
     }
@@ -52,8 +56,10 @@ class CategoryProvider extends ChangeNotifier {
 
   onPopSounds(items, categoryAudio) async {
     final check1 = categoryAudio != null && categoryAudio.isNotEmpty;
-    final check2 =
-        items[indexItem1].audio != null && items[indexItem1].audio.isNotEmpty;
+    final check2 = items.length > 0
+        ? (items[indexItem1].audio != null &&
+            items[indexItem1].audio.isNotEmpty)
+        : false;
     final audioLink1 =
         check1 ? linkStart + categoryAudio[0]['download_link'] : '';
     final audioLink2 =
@@ -67,6 +73,9 @@ class CategoryProvider extends ChangeNotifier {
       audioSources.add(AudioSource.asset(AppSounds.audionone));
     } else if (audio1 != null) {
       audioSources.add(AudioSource.uri(Uri.file(audio1.file.path)));
+      audio2 != null
+          ? audioSources.add(AudioSource.uri(Uri.file(audio2.file.path)))
+          : audioSources.add(AudioSource.asset(AppSounds.audionone));
     } else if (audio2 != null) {
       audioSources.add(AudioSource.uri(Uri.file(audio2.file.path)));
     }

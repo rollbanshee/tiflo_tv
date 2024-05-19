@@ -77,7 +77,7 @@ class Favourites extends StatelessWidget {
                                                             element.image
                                                         : providerOnBoarding
                                                             .imageError,
-                                                    fit: BoxFit.cover,
+                                                    fit: BoxFit.fill,
                                                     placeholder: (context, url) => Platform
                                                             .isAndroid
                                                         ? const Center(

@@ -15,7 +15,9 @@ class HomeScreenCarouselDots extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 24.h),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        for (int i = 0; i < (sliders?.length ?? 4); i++)
+        for (int i = 0;
+            i < (sliders == null || sliders.isEmpty ? 4 : sliders.length);
+            i++)
           Container(
             margin: EdgeInsets.symmetric(horizontal: 3.w),
             width: 8.w,

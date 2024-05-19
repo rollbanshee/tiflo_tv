@@ -21,7 +21,7 @@ class HomeScreenCarousel extends StatelessWidget {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
     final sliders = providerOnBoarding.homeSliders;
     return CarouselSlider.builder(
-      itemCount: sliders?.length ?? 4,
+      itemCount: (sliders == null || sliders.isEmpty ? 4 : sliders.length),
       itemBuilder: (context, index, realIndex) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Stack(children: [
@@ -30,13 +30,12 @@ class HomeScreenCarousel extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: CachedNetworkImage(
-                  imageUrl: sliders == null
+                  imageUrl: sliders == null || sliders.isEmpty
                       ? 'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png'
                       : sliders[index].image != null
-                          ? providerOnBoarding.linkStart +
-                              sliders[index].image
+                          ? providerOnBoarding.linkStart + sliders[index].image
                           : providerOnBoarding.imageError,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   placeholder: (context, url) => Platform.isAndroid
                       ? const Center(
                           child: Center(
@@ -49,22 +48,22 @@ class HomeScreenCarousel extends StatelessWidget {
                       const Icon(Icons.error)),
             ),
           ),
-          Positioned(
-            bottom: 16.h,
-            left: 16.w,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 1.25,
-              child: Text(
-                sliders == null ? '' : sliders[index].name,
-                style: TextStyle(
-                    fontFamily: AppFonts.poppins,
-                    color: Colors.white,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 16.h,
+          //   left: 16.w,
+          //   child: SizedBox(
+          //     width: MediaQuery.of(context).size.width / 1.25,
+          //     child: Text(
+          //       sliders == null || sliders.isEmpty ? '' : sliders[index].name,
+          //       style: TextStyle(
+          //           fontFamily: AppFonts.poppins,
+          //           color: Colors.white,
+          //           fontSize: 12.sp,
+          //           fontWeight: FontWeight.w500),
+          //       overflow: TextOverflow.ellipsis,
+          //     ),
+          //   ),
+          // ),
           Align(
             alignment: Alignment.center,
             child: SvgPicture.asset(
@@ -81,7 +80,7 @@ class HomeScreenCarousel extends StatelessWidget {
               highlightColor: Colors.white24,
               borderRadius: BorderRadius.circular(8.r),
               onTap: () {
-                sliders == null
+                sliders == null || sliders.isEmpty
                     ? null
                     : Navigator.push(
                         context,

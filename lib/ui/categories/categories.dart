@@ -113,7 +113,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                       "+", categories.length - 1);
                                   final finalHeight =
                                       (providerCategories.indexItem1 / 2) *
-                                          providerCategories.heightGridItem;
+                                          143.6.h;
                                   providerCategories.indexItem1 % 2 == 0 ||
                                           providerCategories.indexItem1 == 0
                                       ? providerCategories.controller.animateTo(
@@ -133,7 +133,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                   final finalHeight =
                                       ((providerCategories.indexItem1 - 1) /
                                               2) *
-                                          providerCategories.heightGridItem;
+                                          143.6.h;
                                   providerCategories.indexItem1 % 2 != 0 ||
                                           providerCategories.indexItem1 ==
                                               categories.length

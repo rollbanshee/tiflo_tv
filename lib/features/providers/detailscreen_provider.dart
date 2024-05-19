@@ -4,18 +4,15 @@ import 'package:intl/intl.dart';
 import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 
 class DetailScreenProvider extends ChangeNotifier {
-  String? views;
   final box = Hive.box("favourites");
-  bool isGetViewsCalled = false;
+  // bool isGetViewsCalled = false;
   int elapsedTime = 0;
-  VoidCallback videoListener(controller, id, dataDetailScreen) {
-    return () async {
-      if (controller.value.isPlaying && !isGetViewsCalled) {
-        isGetViewsCalled = true;
-      await apiClient.postViewIncrement(id);
-        notifyListeners();
-      }
-    };
+  String? views;
+
+  Future<void> postViews(id) async {
+    views = null;
+    views = await apiClient.postViewIncrement(id);
+    notifyListeners();
   }
 
   Future<void> addFavourite(item) async {

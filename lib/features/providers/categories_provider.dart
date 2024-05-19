@@ -7,8 +7,6 @@ import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoriesProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.abasoft.dev/storage/';
-  late double heightGridItem;
-  late double widthGridItem;
 
   int indexItem1 = 0;
   final player = AudioPlayer();
@@ -25,8 +23,10 @@ class CategoriesProvider extends ChangeNotifier {
 
   initStateCategoriesSounds(categories) async {
     try {
-      final audioLink =
-          linkStart + categories[indexItem1].audio[0]['download_link'];
+      final audioLink = linkStart +
+          (categories.length > 0
+              ? (categories[indexItem1].audio[0]['download_link'])
+              : '');
       final audio1 = await manager.getFileFromCache(audioLink);
       final playlist = ConcatenatingAudioSource(children: [
         AudioSource.asset(AppSounds.categories),
@@ -56,8 +56,10 @@ class CategoriesProvider extends ChangeNotifier {
 
   onPopSounds(categories) async {
     try {
-      final audioLink =
-          linkStart + categories[indexItem1].audio[0]['download_link'];
+      final audioLink = linkStart +
+          (categories.length > 0
+              ? (categories[indexItem1].audio[0]['download_link'])
+              : '');
       final audio1 = await manager.getFileFromCache(audioLink);
       final playlist = ConcatenatingAudioSource(children: [
         AudioSource.asset(AppSounds.categories),

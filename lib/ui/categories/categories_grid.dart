@@ -20,7 +20,7 @@ class CategoriesGrid extends StatelessWidget {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
     final categories = providerOnBoarding.categories;
-    double sizeHeight = 4.8;
+    double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
@@ -82,11 +82,7 @@ class _GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
     final providerCategories = context.read<CategoriesProvider>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox = context.findRenderObject() as RenderBox;
-      final size = renderBox.size;
-      providerCategories.heightGridItem = size.height;
-    });
+
     return Column(
       children: [
         Stack(
@@ -100,7 +96,7 @@ class _GridItem extends StatelessWidget {
                 imageUrl: categories[index].image != null
                     ? providerOnBoarding.linkStart + categories[index].image
                     : providerOnBoarding.imageError,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
                 placeholder: (context, url) => Platform.isAndroid
                     ? const Center(
                         child: CircularProgressIndicator(
@@ -142,18 +138,16 @@ class _GridItem extends StatelessWidget {
         SizedBox(
           height: 8.h,
         ),
-        LayoutBuilder(builder: (context, constraints) {
-          return Text(
-            categories[index].category_name,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: TextStyle(
-                fontFamily: AppFonts.poppins,
-                fontSize: constraints.maxWidth > 250 ? 10.sp : 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).primaryColor),
-          );
-        })
+        Text(
+          categories[index].category_name,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          style: TextStyle(
+              fontFamily: AppFonts.poppins,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColor),
+        )
       ],
     );
   }

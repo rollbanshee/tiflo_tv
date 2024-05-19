@@ -1,4 +1,4 @@
-package com.example.tiflo_tv
+package com.tiflo_tv
 
 import io.flutter.embedding.android.FlutterActivity
 

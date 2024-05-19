@@ -9,15 +9,7 @@ class DetailScreenPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
-      child: Ink(
-        height: 184.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child:
-            ClipRRect(borderRadius: BorderRadius.circular(8.r), child: player),
-      ),
+      child: ClipRRect(borderRadius: BorderRadius.circular(8.r), child: player),
     );
   }
 }

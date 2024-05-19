@@ -9,7 +9,7 @@ import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/providers/category_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/category/category_grid.dart';
-import 'package:tiflo_tv/ui/youtube_player_sesli.dart';
+import 'package:tiflo_tv/ui/pod_player_sesli.dart';
 
 class Category extends StatefulWidget {
   final int categoryIndex;
@@ -140,8 +140,8 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  YoutubePlayerSesli(
-                                                    id: items[providerCategory
+                                                  PodPlayerSesli(
+                                                    id: items?[providerCategory
                                                             .indexItem1]
                                                         .id,
                                                   )))
@@ -165,7 +165,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                         "+", items.length - 1);
                                     final finalHeight =
                                         (providerCategory.indexItem1 / 2) *
-                                            providerCategory.heightGridItem;
+                                            143.6.h;
                                     providerCategory.indexItem1 % 2 == 0 ||
                                             providerCategory.indexItem1 == 0
                                         ? providerCategory.controller.animateTo(
@@ -186,7 +186,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                     final finalHeight =
                                         ((providerCategory.indexItem1 - 1) /
                                                 2) *
-                                            providerCategory.heightGridItem;
+                                            143.6.h;
                                     providerCategory.indexItem1 % 2 != 0 ||
                                             providerCategory.indexItem1 ==
                                                 items.length

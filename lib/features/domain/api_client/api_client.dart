@@ -115,8 +115,8 @@ class ApiClient {
         'second_section_text': secondText
       };
       final aboutUs = AboutUs.fromJson(info as Map<String, dynamic>);
-      print(aboutUs.firstText);
-      print(aboutUs.secondText);
+      // print(aboutUs.firstText);
+      // print(aboutUs.secondText);
 
       return aboutUs;
     } catch (error) {

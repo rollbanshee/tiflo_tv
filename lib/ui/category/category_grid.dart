@@ -19,7 +19,7 @@ class CategoryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
-    double sizeHeight = 4.8;
+    double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
@@ -86,12 +86,6 @@ class _GridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final providerCategory = context.watch<CategoryProvider>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox = context.findRenderObject() as RenderBox;
-      final size = renderBox.size;
-      providerCategory.heightGridItem = size.height;
-    });
     return Column(
       children: [
         Stack(
@@ -102,7 +96,7 @@ class _GridItem extends StatelessWidget {
               child: CachedNetworkImage(
                 width: double.infinity,
                 height: 88.h,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
                 imageUrl: items?[index].image != null
                     ? providerOnBoarding.linkStart + items![index].image
                     : providerOnBoarding.imageError,
@@ -150,17 +144,15 @@ class _GridItem extends StatelessWidget {
         SizedBox(
           height: 8.h,
         ),
-        LayoutBuilder(
-          builder: (context, constraints) => Text(
-            items?[index].name,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: TextStyle(
-                fontFamily: AppFonts.poppins,
-                fontSize: constraints.maxWidth > 250 ? 10.sp : 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).primaryColor),
-          ),
+        Text(
+          items?[index].name,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          style: TextStyle(
+              fontFamily: AppFonts.poppins,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColor),
         ),
       ],
     );
