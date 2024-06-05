@@ -105,7 +105,7 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
                         child: PodVideoPlayer(
                           controller: controller,
                           videoThumbnail: DecorationImage(
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
                               dataDetailScreen.image != null
                                   ? providerOnBoarding.linkStart +

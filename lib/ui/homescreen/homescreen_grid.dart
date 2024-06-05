@@ -20,7 +20,7 @@ class HomeScreenGrid extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
-    return lessons == null
+    return lessons == null || lessons.isEmpty
         ? Center(
             child: Text(
               "Siyahı boşdur",
@@ -68,7 +68,7 @@ class _GridItem extends StatelessWidget {
                 imageUrl: items[index].image != null
                     ? providerOnBoarding.linkStart + items[index].image
                     : providerOnBoarding.imageError,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 placeholder: (context, url) => Platform.isAndroid
                     ? const Center(
                         child: CircularProgressIndicator(

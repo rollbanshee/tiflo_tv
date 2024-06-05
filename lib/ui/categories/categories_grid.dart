@@ -96,7 +96,7 @@ class _GridItem extends StatelessWidget {
                 imageUrl: categories[index].image != null
                     ? providerOnBoarding.linkStart + categories[index].image
                     : providerOnBoarding.imageError,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 placeholder: (context, url) => Platform.isAndroid
                     ? const Center(
                         child: CircularProgressIndicator(

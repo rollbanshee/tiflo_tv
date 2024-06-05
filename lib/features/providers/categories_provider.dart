@@ -6,7 +6,7 @@ import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoriesProvider extends ChangeNotifier {
-  final String linkStart = 'https://tiflotv.abasoft.dev/storage/';
+  final String linkStart = 'https://tiflotv.az/storage/';
 
   int indexItem1 = 0;
   final player = AudioPlayer();

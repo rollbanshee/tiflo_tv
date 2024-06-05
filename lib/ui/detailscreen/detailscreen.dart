@@ -98,7 +98,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     DetailScreenPlayer(
                         player: PodVideoPlayer(
                       videoThumbnail: DecorationImage(
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(
                           dataDetailScreen.image != null
                               ? providerOnBoarding.linkStart +

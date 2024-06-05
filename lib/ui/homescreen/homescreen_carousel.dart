@@ -35,7 +35,7 @@ class HomeScreenCarousel extends StatelessWidget {
                       : sliders[index].image != null
                           ? providerOnBoarding.linkStart + sliders[index].image
                           : providerOnBoarding.imageError,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   placeholder: (context, url) => Platform.isAndroid
                       ? const Center(
                           child: Center(

@@ -16,7 +16,7 @@ DefaultCacheManager manager = DefaultCacheManager();
 class OnBoardingProvider extends ChangeNotifier {
   int sliding = 1;
   final player = AudioPlayer();
-  final String linkStart = 'https://tiflotv.abasoft.dev/storage/';
+  final String linkStart = 'https://tiflotv.az/storage/';
   final String imageError =
       'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png';
   List? allLessons;

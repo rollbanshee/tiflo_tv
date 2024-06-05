@@ -12,7 +12,7 @@ class ApiClient {
   final dio = Dio();
 
   Future<dynamic> getHome() async {
-    const url = 'https://tiflotv.abasoft.dev/api/home';
+    const url = 'https://tiflotv.az/api/home';
     try {
       final response = await dio.get(url,
           options: Options(headers: {
@@ -32,7 +32,7 @@ class ApiClient {
   }
 
   Future<dynamic> getAllItems() async {
-    const url = 'https://tiflotv.abasoft.dev/api/lessons';
+    const url = 'https://tiflotv.az/api/lessons';
     try {
       final response = await dio.get(url,
           options: Options(headers: {
@@ -53,7 +53,7 @@ class ApiClient {
   }
 
   Future<dynamic> getCategories() async {
-    const url = 'https://tiflotv.abasoft.dev/api/categories';
+    const url = 'https://tiflotv.az/api/categories';
     try {
       final response = await dio.get(url,
           options: Options(headers: {
@@ -76,7 +76,7 @@ class ApiClient {
   }
 
   Future<dynamic> getCategoryItems(id) async {
-    final url = 'https://tiflotv.abasoft.dev/api/categories/$id';
+    final url = 'https://tiflotv.az/api/categories/$id';
     try {
       final response = await dio.get(url,
           options: Options(headers: {
@@ -95,7 +95,7 @@ class ApiClient {
   }
 
   Future<dynamic> getInfo() async {
-    const url = 'https://tiflotv.abasoft.dev/api/about';
+    const url = 'https://tiflotv.az/api/about';
     try {
       final response = await dio.get(url,
           options: Options(
@@ -125,7 +125,7 @@ class ApiClient {
   }
 
   Future<dynamic> postViewIncrement(id) async {
-    const url = 'https://tiflotv.abasoft.dev/api/increase-view-count';
+    const url = 'https://tiflotv.az/api/increase-view-count';
     try {
       final response = await dio.post(url,
           options: Options(
@@ -193,7 +193,7 @@ class ApiClient {
   // }
 
   // Future<dynamic> getHome() async {
-  //   const url = 'https://tiflotv.abasoft.dev/api/home';
+  //   const url = 'https://tiflotv.az/api/home';
   //   try {
   //     final response = await dio.get(url);
   //     final responseData = response.data;

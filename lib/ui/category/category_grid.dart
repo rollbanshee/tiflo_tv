@@ -96,7 +96,7 @@ class _GridItem extends StatelessWidget {
               child: CachedNetworkImage(
                 width: double.infinity,
                 height: 88.h,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 imageUrl: items?[index].image != null
                     ? providerOnBoarding.linkStart + items![index].image
                     : providerOnBoarding.imageError,
