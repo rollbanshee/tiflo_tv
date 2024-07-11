@@ -33,6 +33,7 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
     // providerDetailScreen.isGetViewsCalled = false;
     dataDetailScreen = providerOnBoarding.allLessons!
         .firstWhere((item) => item.id == widget.id, orElse: () => null);
+    // providerDetailScreen.getVimeoVideoData(int.parse(dataDetailScreen.link!));
 
     controller = PodPlayerController(
         playVideoFrom: PlayVideoFrom.vimeo(
@@ -61,7 +62,8 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!mounted) return;
     if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused) {
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
       playerSesliPod.stop();
     }
   }
@@ -73,6 +75,7 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<DetailScreenProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
     return WillPopScope(
       onWillPop: () async {
@@ -102,7 +105,11 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
                   IgnorePointer(
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
-                        child: PodVideoPlayer(
+                        child:
+                            // WebViewWidget(
+                            // controller: providerDetailScreen.controllerWebView),
+
+                            PodVideoPlayer(
                           controller: controller,
                           videoThumbnail: DecorationImage(
                             fit: BoxFit.cover,

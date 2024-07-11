@@ -136,7 +136,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                           143.6.h;
                                   providerCategories.indexItem1 % 2 != 0 ||
                                           providerCategories.indexItem1 ==
-                                              categories.length
+                                              categories.length - 1
                                       ? providerCategories.controller.animateTo(
                                           finalHeight,
                                           duration:

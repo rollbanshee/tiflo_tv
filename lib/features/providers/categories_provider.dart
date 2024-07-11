@@ -85,9 +85,9 @@ class CategoriesProvider extends ChangeNotifier {
     try {
       final audioLink =
           linkStart + categories[indexItem1].audio[0]['download_link'];
+      final audioPath = (await manager.getFileFromCache(audioLink))!.file.path;
       await player.stop();
-      await player
-          .setUrl((await manager.getFileFromCache(audioLink))!.file.path);
+      await player.setFilePath(audioPath);
       await player.play();
     } catch (e) {
       await player.setAsset(AppSounds.audionone);

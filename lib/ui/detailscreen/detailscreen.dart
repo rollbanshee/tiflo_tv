@@ -37,6 +37,8 @@ class _DetailScreenState extends State<DetailScreen> {
     // providerDetailScreen.isGetViewsCalled = false;
     dataDetailScreen = providerOnBoarding.allLessons!
         .firstWhere((item) => item.id == widget.id, orElse: () => null);
+    // providerDetailScreen.getVimeoVideoData(int.parse(dataDetailScreen.link!));
+
     controller = PodPlayerController(
         playVideoFrom: PlayVideoFrom.vimeo(
           dataDetailScreen.link.toString(),
@@ -96,6 +98,13 @@ class _DetailScreenState extends State<DetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DetailScreenPlayer(
+                        // player:
+                        //  AspectRatio(
+                        //   aspectRatio: 16 / 9,
+                        //   child: WebViewWidget(
+                        //     controller: providerDetailScreen.controllerWebView,
+                        //   ),
+                        // ),
                         player: PodVideoPlayer(
                       videoThumbnail: DecorationImage(
                         fit: BoxFit.cover,

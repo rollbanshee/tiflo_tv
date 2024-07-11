@@ -189,7 +189,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                             143.6.h;
                                     providerCategory.indexItem1 % 2 != 0 ||
                                             providerCategory.indexItem1 ==
-                                                items.length
+                                                items.length - 1
                                         ? providerCategory.controller.animateTo(
                                             finalHeight,
                                             duration: const Duration(
