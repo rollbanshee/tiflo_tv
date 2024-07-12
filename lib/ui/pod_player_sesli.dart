@@ -46,7 +46,9 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
     providerDetailScreen.postViews(dataDetailScreen.id);
     playerSesliPod.playerStateStream.listen((event) {
       event.processingState == ProcessingState.completed
-          ? controller.play()
+          ? setState(() {
+              controller.play();
+            })
           : null;
     });
 
@@ -85,7 +87,11 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
       child: GestureDetector(
           onDoubleTap: () async {
             playerSesliPod.playing ? await playerSesliPod.stop() : null;
-            controller.isVideoPlaying ? controller.pause() : controller.play();
+            setState(() {
+              controller.isVideoPlaying
+                  ? controller.pause()
+                  : controller.play();
+            });
           },
           onHorizontalDragEnd: (details) => details.primaryVelocity! > 0
               ? controller.videoSeekForward(const Duration(seconds: 10))
