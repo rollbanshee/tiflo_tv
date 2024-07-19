@@ -53,33 +53,15 @@ class DetailScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addFavourite(item) async {
-    int count = 0;
-    for (int key in box.keys) {
-      if (key >= count) {
-        count = key + 1;
-      }
-    }
-    box.put(count, item);
+  void addFavourite(item) {
+    box.add(item);
     notifyListeners();
   }
 
-  Future<void> deleteFavourite(item) async {
-    final keys = box.keys;
-    final key = keys.firstWhere(
-      (e) => box.get(e) == item,
-      orElse: () => null,
-    );
-    if (key != null) {
-      box.delete(key);
-      for (int k in keys) {
-        if (k > key) {
-          box.put(k - 1, box.get(k));
-          box.delete(k);
-        }
-      }
-      notifyListeners();
-    }
+  void deleteFavourite(item) {
+    final key = box.keys.firstWhere((element) => box.get(element) == item);
+    box.delete(key);
+    notifyListeners();
   }
 
   String formatDateTime(dateTimeString, String locale) {

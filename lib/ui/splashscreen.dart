@@ -22,7 +22,8 @@ class _SplashScreenState extends State<SplashScreen>
     final providerOnBoarding = context.read<OnBoardingProvider>();
     // _scale();
     providerOnBoarding
-        .versionCheck()
+        // .versionCheck()
+        .getInfo()
         .whenComplete(() => Navigator.pushReplacement(context, _createRoute()));
 
     super.initState();

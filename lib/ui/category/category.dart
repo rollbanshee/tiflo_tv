@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/providers/category_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
@@ -12,15 +13,9 @@ import 'package:tiflo_tv/ui/category/category_grid.dart';
 import 'package:tiflo_tv/ui/pod_player_sesli.dart';
 
 class Category extends StatefulWidget {
-  final int categoryIndex;
-  final String categoryName;
-  final List? categoryAudio;
+  final Categories category;
 
-  const Category(
-      {super.key,
-      required this.categoryIndex,
-      required this.categoryAudio,
-      required this.categoryName});
+  const Category({super.key, required this.category});
 
   @override
   State<Category> createState() => _CategoryState();
@@ -32,12 +27,10 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.read<CategoryProvider>();
     WidgetsBinding.instance.addObserver(this);
+    providerCategory.isBackPressed = false;
+    providerCategory.getCategoryItems(widget.category.category_id,
+        providerOnBoarding.sliding, widget.category.audio);
     providerCategory.indexItem1 = 0;
-    if (providerOnBoarding.sliding == 1) {
-      providerCategory.initStateCategorySounds(
-          providerOnBoarding.categoriesIdWithItems![widget.categoryIndex],
-          widget.categoryAudio);
-    }
     super.initState();
   }
 
@@ -55,11 +48,12 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerCategory = context.watch<CategoryProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
-    final items =
-        providerOnBoarding.categoriesIdWithItems?[widget.categoryIndex];
+    final items = providerCategory.categoryItems ?? [];
+    // providerOnBoarding.categoriesIdWithItems?[widget.categoryIndex];
     // ignore: deprecated_member_use
     return WillPopScope(
         onWillPop: () async {
+          providerCategory.isBackPressed = true;
           await providerCategory.player.stop();
           return true;
         },
@@ -106,7 +100,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Text(
-                            widget.categoryName,
+                            widget.category.category_name,
                             maxLines: 1,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
@@ -132,29 +126,27 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                             ? GestureDetector(
                                 behavior: HitTestBehavior.opaque,
                                 onDoubleTap: () async {
-                                  items.isNotEmpty
-                                      ? await providerCategory.player.stop()
-                                      : null;
-                                  bool? back = items.isNotEmpty
-                                      ? await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PodPlayerSesli(
-                                                    id: items?[providerCategory
-                                                            .indexItem1]
-                                                        .id,
-                                                  )))
-                                      : false;
-                                  if (back == true || back == null) {
-                                    await providerCategory.onPopSounds(
-                                        items, widget.categoryAudio);
+                                  if (items.isNotEmpty) {
+                                    await providerCategory.player.stop();
+                                    bool? back = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PodPlayerSesli(
+                                                  dataDetailScreen: items[
+                                                      providerCategory
+                                                          .indexItem1],
+                                                )));
+                                    if (back == true || back == null) {
+                                      await providerCategory.onPopSounds(
+                                          items, widget.category.audio);
+                                    }
                                   }
                                 },
                                 onVerticalDragEnd: (details) async {
                                   if (details.primaryVelocity! > 0) {
+                                    providerCategory.isBackPressed = true;
                                     await providerCategory.player.stop();
-
                                     Navigator.pop(context, true);
                                   }
                                 },
@@ -200,8 +192,8 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                         .itemsNameSounds(items);
                                   }
                                 },
-                                child: CategoryGrid(items: items))
-                            : CategoryGrid(items: items)),
+                                child: const CategoryGrid())
+                            : const CategoryGrid()),
                   )
                 ],
               ),

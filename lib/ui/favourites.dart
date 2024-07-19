@@ -115,7 +115,8 @@ class Favourites extends StatelessWidget {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               DetailScreen(
-                                                                id: element.id,
+                                                                dataDetailScreen:
+                                                                    element,
                                                               ))),
                                                 ),
                                               ),

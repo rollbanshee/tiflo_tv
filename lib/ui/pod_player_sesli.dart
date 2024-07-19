@@ -13,37 +13,33 @@ import 'package:tiflo_tv/features/resources/resources.dart';
 // import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PodPlayerSesli extends StatefulWidget {
-  const PodPlayerSesli({super.key, required this.id});
-  final int id;
+  final Items dataDetailScreen;
+  const PodPlayerSesli({super.key, required this.dataDetailScreen});
 
   @override
   State<PodPlayerSesli> createState() => _PodPlayerSesliState();
 }
 
 class _PodPlayerSesliState extends State<PodPlayerSesli> {
-  late Items dataDetailScreen;
   final playerSesliPod = AudioPlayer();
   late final PodPlayerController controller;
 
   @override
   void initState() {
-    final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerDetailScreen = context.read<DetailScreenProvider>();
     playAudio();
     // providerDetailScreen.isGetViewsCalled = false;
-    dataDetailScreen = providerOnBoarding.allLessons!
-        .firstWhere((item) => item.id == widget.id, orElse: () => null);
     // providerDetailScreen.getVimeoVideoData(int.parse(dataDetailScreen.link!));
 
     controller = PodPlayerController(
         playVideoFrom: PlayVideoFrom.vimeo(
-          dataDetailScreen.link.toString(),
+          widget.dataDetailScreen.link.toString(),
         ),
         podPlayerConfig: const PodPlayerConfig(
           autoPlay: false,
         ))
       ..initialise();
-    providerDetailScreen.postViews(dataDetailScreen.id);
+    providerDetailScreen.postViews(widget.dataDetailScreen.id);
     playerSesliPod.playerStateStream.listen((event) {
       event.processingState == ProcessingState.completed
           ? setState(() {
@@ -120,9 +116,9 @@ class _PodPlayerSesliState extends State<PodPlayerSesli> {
                           videoThumbnail: DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                              dataDetailScreen.image != null
+                              widget.dataDetailScreen.image != null
                                   ? providerOnBoarding.linkStart +
-                                      dataDetailScreen.image.toString()
+                                      widget.dataDetailScreen.image.toString()
                                   : providerOnBoarding.imageError,
                             ),
                           ),

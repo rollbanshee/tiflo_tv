@@ -7,7 +7,7 @@ part of 'categories.dart';
 // **************************************************************************
 
 Categories _$CategoriesFromJson(Map<String, dynamic> json) => Categories(
-      json['id'] as int,
+      (json['id'] as num).toInt(),
       json['name'] as String,
       json['image'] as String?,
       json['sound_file'] as List<dynamic>?,

@@ -86,7 +86,7 @@ class HomeScreenCarousel extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailScreen(
-                            id: sliders[index].id,
+                            dataDetailScreen: sliders[index],
                           ),
                         ),
                       );

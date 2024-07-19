@@ -19,57 +19,64 @@ class CategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerOnBoarding.categories;
+    final categories = providerCategories.categories;
     double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
-    return categories == null || categories.isEmpty
-        ? Center(
-            child: Text(
-            "Siyahı boşdur",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: const Color.fromRGBO(157, 157, 157, 1),
-                fontFamily: AppFonts.poppins,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.sp),
-          ))
-        : GridView.builder(
-            controller: providerCategories.controller,
-            physics: providerOnBoarding.sliding == 1
-                ? const NeverScrollableScrollPhysics()
-                : null,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12.h,
-                crossAxisSpacing: 24.w,
-                childAspectRatio: (itemWidth / itemHeight)),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              if (providerOnBoarding.sliding == 0) {
-                return _GridItem(
-                  categories: categories,
-                  index: index,
-                );
-              } else if (providerOnBoarding.sliding == 1) {
-                return providerCategories.indexItem1 == index
-                    ? Container(
-                        padding: EdgeInsets.all(2.w),
-                        decoration: BoxDecoration(
-                            // color: Colors.black,
-                            border: Border.all(width: 3, color: Colors.red),
-                            borderRadius: BorderRadius.circular(10.r)),
-                        child: Material(
+    return providerCategories.isLoading
+        ? Platform.isAndroid
+            ? const Center(
+                child: CircularProgressIndicator(
+                    strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
+            : const Center(child: CupertinoActivityIndicator())
+        : categories!.isEmpty
+            ? Center(
+                child: Text(
+                "Siyahı boşdur",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: const Color.fromRGBO(157, 157, 157, 1),
+                    fontFamily: AppFonts.poppins,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.sp),
+              ))
+            : GridView.builder(
+                controller: providerCategories.controller,
+                physics: providerOnBoarding.sliding == 1
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12.h,
+                    crossAxisSpacing: 24.w,
+                    childAspectRatio: (itemWidth / itemHeight)),
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  if (providerOnBoarding.sliding == 0) {
+                    return _GridItem(
+                      categories: categories,
+                      index: index,
+                    );
+                  } else if (providerOnBoarding.sliding == 1) {
+                    return providerCategories.indexItem1 == index
+                        ? Container(
+                            padding: EdgeInsets.all(2.w),
+                            decoration: BoxDecoration(
+                                // color: Colors.black,
+                                border: Border.all(width: 3, color: Colors.red),
+                                borderRadius: BorderRadius.circular(10.r)),
+                            child: Material(
+                                color: Colors.white,
+                                child: _GridItem(
+                                    index: index, categories: categories)))
+                        : Material(
                             color: Colors.white,
                             child: _GridItem(
-                                index: index, categories: categories)))
-                    : Material(
-                        color: Colors.white,
-                        child: _GridItem(index: index, categories: categories));
-              }
-              return null;
-            });
+                                index: index, categories: categories));
+                  }
+                  return null;
+                });
   }
 }
 
@@ -123,10 +130,7 @@ class _GridItem extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => Category(
-                                        categoryIndex: index,
-                                        categoryName:
-                                            categories[index].category_name,
-                                        categoryAudio: categories[index].audio,
+                                        category: categories[index],
                                       )));
                         },
                       ),

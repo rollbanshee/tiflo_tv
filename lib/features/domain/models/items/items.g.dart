@@ -66,7 +66,7 @@ class ItemsAdapter extends TypeAdapter<Items> {
 // **************************************************************************
 
 Items _$ItemsFromJson(Map<String, dynamic> json) => Items(
-      json['id'] as int?,
+      (json['id'] as num?)?.toInt(),
       json['name'] as String?,
       json['video_link'] as String?,
       json['description'] as String?,

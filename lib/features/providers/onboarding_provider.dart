@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -19,14 +18,13 @@ class OnBoardingProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.az/storage/';
   final String imageError =
       'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png';
-  List? allLessons;
+  // List? allLessons;
+  // final boxCategories = Hive.box("categories");
+  // final boxCategoryItems = Hive.box('categoryItems');
   List? homeSliders;
   List? homeLessons;
-  List? categories;
   AboutUs? info;
-  List? categoriesIdWithItems = [];
-  List audio = [];
-  String? dataVersion = "";
+  // String? dataVersion = "";
   bool isLoading = false;
 
   Future<void> getDataOnboarding(context) async {
@@ -50,44 +48,22 @@ class OnBoardingProvider extends ChangeNotifier {
                     radius: 15.r,
                   ));
           });
-      await getAllData();
+      await getHome();
       isLoading = false;
       Navigator.pop(context);
       notifyListeners();
     }
   }
 
-  Future<void> getAllData() async {
+  Future<void> getHome() async {
     final getHome = await apiClient.getHome();
-    info = await apiClient.getInfo();
     homeSliders = getHome.sliders;
     homeLessons = getHome.lessons;
   }
 
-  Future<void> versionCheck() async {
-    allLessons = await apiClient.getAllItems();
-    final getCaregories = await apiClient.getCategories();
-    dataVersion = getCaregories['version'].toString();
-    categories = getCaregories['categories'];
-    for (var e in categories!) {
-      var items = await apiClient.getCategoryItems(e.category_id);
-      categoriesIdWithItems?.add(items);
-    }
-    Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
-    FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
-    final cachedVersion = fileInfo?.file.readAsStringSync();
-    if (cachedVersion != dataVersion) {
-      await manager.emptyCache();
-      await manager.putFile("version.txt", dataVersionUint8);
-      categories?.forEach((e) => e.audio != null && e.audio.isNotEmpty
-          ? audio.add(linkStart + e.audio[0]['download_link'])
-          : null);
-      allLessons?.forEach((e) => e.audio != null && e.audio.isNotEmpty
-          ? audio.add(linkStart + e.audio[0]['download_link'])
-          : null);
-      await Future.wait(
-          audio.map((audioUrl) => manager.downloadFile(audioUrl)));
-    }
+  Future<void> getInfo() async {
+    info = await apiClient.getInfo();
+    // dataVersion = info!.version.toString();
   }
 
   initStateOnBoardingSounds() async {
@@ -103,7 +79,7 @@ class OnBoardingProvider extends ChangeNotifier {
   Future<void> getData() async {
     if (!isLoading) {
       isLoading = true;
-      await getAllData();
+      await getHome();
       isLoading = false;
       notifyListeners();
     }

@@ -12,75 +12,81 @@ import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen.dart';
 
 class CategoryGrid extends StatelessWidget {
-  final List<dynamic>? items;
-  const CategoryGrid({required this.items, super.key});
+  const CategoryGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
+    final categoryItems = providerCategory.categoryItems;
     double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
-    return items == null || items!.isEmpty
-        ? Center(
-            child: Text(
-              "Siyahı boşdur",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: const Color.fromRGBO(157, 157, 157, 1),
-                  fontFamily: AppFonts.poppins,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.sp),
-            ),
-          )
-        : GridView.builder(
-            controller: providerCategory.controller,
-            physics: providerOnBoarding.sliding == 1
-                ? const NeverScrollableScrollPhysics()
-                : null,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12.h,
-              crossAxisSpacing: 24.w,
-              childAspectRatio: (itemWidth / itemHeight),
-            ),
-            itemCount: items?.length,
-            itemBuilder: (context, index) {
-              if (providerOnBoarding.sliding == 0) {
-                return _GridItem(
-                  items: items,
-                  index: index,
-                );
-              } else if (providerOnBoarding.sliding == 1) {
-                return providerCategory.indexItem1 == index
-                    ? Container(
-                        padding: EdgeInsets.all(2.w),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 3, color: Colors.red),
-                            borderRadius: BorderRadius.circular(10.r)),
-                        child: Material(
+    return providerCategory.isLoading
+        ? Platform.isAndroid
+            ? const Center(
+                child: CircularProgressIndicator(
+                    strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
+            : const Center(child: CupertinoActivityIndicator())
+        : categoryItems!.isEmpty
+            ? Center(
+                child: Text(
+                  "Siyahı boşdur",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: const Color.fromRGBO(157, 157, 157, 1),
+                      fontFamily: AppFonts.poppins,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.sp),
+                ),
+              )
+            : GridView.builder(
+                controller: providerCategory.controller,
+                physics: providerOnBoarding.sliding == 1
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12.h,
+                  crossAxisSpacing: 24.w,
+                  childAspectRatio: (itemWidth / itemHeight),
+                ),
+                itemCount: categoryItems.length,
+                itemBuilder: (context, index) {
+                  if (providerOnBoarding.sliding == 0) {
+                    return _GridItem(
+                      items: categoryItems,
+                      index: index,
+                    );
+                  } else if (providerOnBoarding.sliding == 1) {
+                    return providerCategory.indexItem1 == index
+                        ? Container(
+                            padding: EdgeInsets.all(2.w),
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 3, color: Colors.red),
+                                borderRadius: BorderRadius.circular(10.r)),
+                            child: Material(
+                                color: Colors.white,
+                                child: _GridItem(
+                                  items: categoryItems,
+                                  index: index,
+                                )))
+                        : Material(
                             color: Colors.white,
                             child: _GridItem(
-                              items: items,
+                              items: categoryItems,
                               index: index,
-                            )))
-                    : Material(
-                        color: Colors.white,
-                        child: _GridItem(
-                          items: items,
-                          index: index,
-                        ));
-              }
-              return null;
-            });
+                            ));
+                  }
+                  return null;
+                });
   }
 }
 
 class _GridItem extends StatelessWidget {
   final int index;
-  final List<dynamic>? items;
+  final List<dynamic> items;
   const _GridItem({required this.items, required this.index});
 
   @override
@@ -97,8 +103,8 @@ class _GridItem extends StatelessWidget {
                 width: double.infinity,
                 height: 88.h,
                 fit: BoxFit.cover,
-                imageUrl: items?[index].image != null
-                    ? providerOnBoarding.linkStart + items![index].image
+                imageUrl: items[index].image != null
+                    ? providerOnBoarding.linkStart + items[index].image
                     : providerOnBoarding.imageError,
                 placeholder: (context, url) => Platform.isAndroid
                     ? const Center(
@@ -130,7 +136,7 @@ class _GridItem extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailScreen(
-                                id: items?[index].id,
+                                dataDetailScreen: items[index],
                               ),
                             ),
                           );
@@ -145,7 +151,7 @@ class _GridItem extends StatelessWidget {
           height: 8.h,
         ),
         Text(
-          items?[index].name,
+          items[index].name,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
           style: TextStyle(

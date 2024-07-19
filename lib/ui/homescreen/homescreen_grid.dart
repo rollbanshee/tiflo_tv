@@ -98,7 +98,7 @@ class _GridItem extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailScreen(
-                          id: items[index].id,
+                          dataDetailScreen: items[index],
                         ),
                       ),
                     );

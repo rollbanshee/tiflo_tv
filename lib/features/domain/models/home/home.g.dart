@@ -13,7 +13,7 @@ Home _$HomeFromJson(Map<String, dynamic> json) => Home(
       (json['lessons'] as List<dynamic>?)
           ?.map((e) => Items.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['version'] as int,
+      (json['version'] as num).toInt(),
     );
 
 Map<String, dynamic> _$HomeToJson(Home instance) => <String, dynamic>{

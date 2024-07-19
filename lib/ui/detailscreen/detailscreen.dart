@@ -19,33 +19,31 @@ import 'package:tiflo_tv/ui/detailscreen/detailscreen_player.dart';
 import 'package:html/parser.dart';
 
 class DetailScreen extends StatefulWidget {
-  final int id;
-  const DetailScreen({required this.id, super.key});
+  final Items dataDetailScreen;
+
+  const DetailScreen({super.key, required this.dataDetailScreen});
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
   late final PodPlayerController controller;
-  late Items dataDetailScreen;
 
   @override
   void initState() {
     initializeDateFormatting("az_AZ", null);
-    final providerOnBoarding = context.read<OnBoardingProvider>();
+    // final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerDetailScreen = context.read<DetailScreenProvider>();
     // providerDetailScreen.isGetViewsCalled = false;
-    dataDetailScreen = providerOnBoarding.allLessons!
-        .firstWhere((item) => item.id == widget.id, orElse: () => null);
     // providerDetailScreen.getVimeoVideoData(int.parse(dataDetailScreen.link!));
 
     controller = PodPlayerController(
         playVideoFrom: PlayVideoFrom.vimeo(
-          dataDetailScreen.link.toString(),
+          widget.dataDetailScreen.link.toString(),
         ),
         podPlayerConfig: const PodPlayerConfig(autoPlay: false))
       ..initialise();
-    providerDetailScreen.postViews(dataDetailScreen.id);
+    providerDetailScreen.postViews(widget.dataDetailScreen.id);
     super.initState();
   }
 
@@ -59,7 +57,8 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     final providerDetailScreen = context.watch<DetailScreenProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
-    final String? description = parse(dataDetailScreen.description).body?.text;
+    final String? description =
+        parse(widget.dataDetailScreen.description).body?.text;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -109,16 +108,16 @@ class _DetailScreenState extends State<DetailScreen> {
                       videoThumbnail: DecorationImage(
                         fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(
-                          dataDetailScreen.image != null
+                          widget.dataDetailScreen.image != null
                               ? providerOnBoarding.linkStart +
-                                  dataDetailScreen.image.toString()
+                                  widget.dataDetailScreen.image.toString()
                               : providerOnBoarding.imageError,
                         ),
                       ),
                       controller: controller,
                     )),
                     Text(
-                      dataDetailScreen.name ?? "",
+                      widget.dataDetailScreen.name ?? "",
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16.sp,
@@ -145,7 +144,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             ),
                           )
                         : Text(
-                            "${providerDetailScreen.formatDateTime(dataDetailScreen.date, "az_AZ")} | ${providerDetailScreen.views}",
+                            "${providerDetailScreen.formatDateTime(widget.dataDetailScreen.date, "az_AZ")} | ${providerDetailScreen.views}",
                             style: TextStyle(
                                 color: const Color.fromRGBO(199, 199, 199, 1),
                                 fontSize: 12.sp,
@@ -153,7 +152,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 fontWeight: FontWeight.w400),
                           ),
                     DetailScreenFavButton(
-                      dataDetailScreen: dataDetailScreen,
+                      dataDetailScreen: widget.dataDetailScreen,
                     ),
                     Text(
                       description ?? "",

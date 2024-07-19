@@ -22,11 +22,9 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
     final providerCategories = context.read<CategoriesProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
     WidgetsBinding.instance.addObserver(this);
+    providerCategories.isBackPressed = false;
+    providerCategories.getCategories(providerOnBoarding.sliding);
     providerCategories.indexItem1 = 0;
-    if (providerOnBoarding.sliding == 1) {
-      providerCategories
-          .initStateCategoriesSounds(providerOnBoarding.categories);
-    }
     super.initState();
   }
 
@@ -44,11 +42,12 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerOnBoarding.categories;
+    final categories = providerCategories.categories ?? [];
 
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
+        providerCategories.isBackPressed = true;
         await providerCategories.player.stop();
         return true;
       },
@@ -75,40 +74,32 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                           ? GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onDoubleTap: () async {
-                                categories!.isNotEmpty
-                                    ? await providerCategories.player.stop()
-                                    : null;
-                                bool? back = categories.isNotEmpty
-                                    ? await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Category(
-                                                categoryAudio: categories[
-                                                        providerCategories
-                                                            .indexItem1]
-                                                    .audio,
-                                                categoryIndex:
+                                if (categories.isNotEmpty) {
+                                  await providerCategories.player.stop();
+                                  bool? back = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Category(
+                                                category: categories[
                                                     providerCategories
-                                                        .indexItem1,
-                                                categoryName: categories[
-                                                        providerCategories
-                                                            .indexItem1]
-                                                    .category_name)))
-                                    : false;
-                                if (back == true || back == null) {
-                                  await providerCategories
-                                      .onPopSounds(categories);
+                                                        .indexItem1],
+                                              )));
+                                  if (back == true || back == null) {
+                                    await providerCategories
+                                        .onPopSounds(categories);
+                                  }
                                 }
                               },
                               onVerticalDragEnd: (details) async {
                                 if (details.primaryVelocity! > 0) {
+                                  providerCategories.isBackPressed = true;
                                   await providerCategories.player.stop();
                                   Navigator.pop(context, true);
                                 }
                               },
                               onHorizontalDragEnd: (details) async {
                                 if (details.primaryVelocity! > 0 &&
-                                    categories!.isNotEmpty) {
+                                    categories.isNotEmpty) {
                                   providerCategories.onSwipe(
                                       "+", categories.length - 1);
                                   final finalHeight =
@@ -127,7 +118,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                 }
 
                                 if (details.primaryVelocity! < 0 &&
-                                    categories!.isNotEmpty) {
+                                    categories.isNotEmpty) {
                                   providerCategories.onSwipe(
                                       "-", categories.length - 1);
                                   final finalHeight =

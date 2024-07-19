@@ -63,10 +63,7 @@ class ApiClient {
           }));
       final responseData = response.data;
       final categories = responseData['data']['categories'];
-      final version = {'version': responseData['version']};
-
-      var data = {'categories': categories, ...version};
-      data['categories'] = data['categories']
+      final data = categories
           .map((e) => Categories.fromJson(e as Map<String, dynamic>))
           .toList();
       return data;
@@ -110,14 +107,13 @@ class ApiClient {
       firstText = parse(firstText).body?.text;
       String? secondText = responseData['data']['second_section_text'];
       secondText = parse(secondText).body?.text;
+      final int version = responseData['version'];
       final info = {
         'first_section_text': firstText,
-        'second_section_text': secondText
+        'second_section_text': secondText,
+        'version': version
       };
       final aboutUs = AboutUs.fromJson(info as Map<String, dynamic>);
-      // print(aboutUs.firstText);
-      // print(aboutUs.secondText);
-
       return aboutUs;
     } catch (error) {
       print(error);
