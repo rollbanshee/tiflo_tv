@@ -10,5 +10,6 @@ class AppSounds {
   static const String mainpage = 'assets/sounds/mainpage.wav';
   static const String navinfo = 'assets/sounds/navinfo.wav';
   static const String navinfovideo = 'assets/sounds/navinfovideo.wav';
+  static const String onboardingtext = 'assets/sounds/onboardingtext.wav';
   static const String welcome = 'assets/sounds/welcome.wav';
 }

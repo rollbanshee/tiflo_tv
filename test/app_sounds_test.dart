@@ -12,6 +12,7 @@ void main() {
     expect(File(AppSounds.mainpage).existsSync(), isTrue);
     expect(File(AppSounds.navinfo).existsSync(), isTrue);
     expect(File(AppSounds.navinfovideo).existsSync(), isTrue);
+    expect(File(AppSounds.onboardingtext).existsSync(), isTrue);
     expect(File(AppSounds.welcome).existsSync(), isTrue);
   });
 }

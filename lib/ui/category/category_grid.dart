@@ -18,7 +18,7 @@ class CategoryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
-    final categoryItems = providerCategory.categoryItems;
+    final categoryItems = providerCategory.categoryItems ?? [];
     double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
@@ -29,7 +29,7 @@ class CategoryGrid extends StatelessWidget {
                 child: CircularProgressIndicator(
                     strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
             : const Center(child: CupertinoActivityIndicator())
-        : categoryItems!.isEmpty
+        : categoryItems.isEmpty
             ? Center(
                 child: Text(
                   "Siyahı boşdur",

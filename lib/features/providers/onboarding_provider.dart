@@ -69,6 +69,7 @@ class OnBoardingProvider extends ChangeNotifier {
   initStateOnBoardingSounds() async {
     final playlist = ConcatenatingAudioSource(children: [
       AudioSource.asset(AppSounds.welcome),
+      AudioSource.asset(AppSounds.onboardingtext),
       AudioSource.asset(AppSounds.entertocategories),
     ]);
     await player.setAudioSource(playlist,

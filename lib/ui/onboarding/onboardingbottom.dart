@@ -12,13 +12,13 @@ class OnBoardingPartBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
     return Padding(
-      padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 24.h),
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              "Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiə Nazirliyinin sosial sifarişi ilə bu kitabların səsləndirilməsi təşkil edilmişdir.",
+              "Azədbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin tabeliyində Sosial Xidmətlər Agentliyinin sosial sifarişi ilə bu filmlərin səsləndirilməsi həyata keçirilmişdir.",
               style: TextStyle(
                 fontFamily: AppFonts.poppins,
                 color: const Color.fromRGBO(31, 35, 35, 1),
