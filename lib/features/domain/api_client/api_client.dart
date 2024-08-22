@@ -11,15 +11,18 @@ final apiClient = ApiClient();
 class ApiClient {
   final dio = Dio();
 
-  Future<dynamic> getHome() async {
+  Future<dynamic> getHome(Function(double) updateLoading) async {
     const url = 'https://tiflotv.az/api/home';
     try {
-      final response = await dio.get(url,
-          options: Options(headers: {
-            "key": "Accept",
-            "value": "application/json",
-            "type": "text"
-          }));
+      final response = await dio.get(
+        url,
+        options: Options(headers: {
+          "key": "Accept",
+          "value": "application/json",
+          "type": "text"
+        }),
+        onReceiveProgress: (count, total) => updateLoading((count / total) / 5),
+      );
       final Map responseData = response.data;
       var data = responseData['data'] as Map<String, dynamic>;
       final version = {'version': responseData['version']};
@@ -52,7 +55,7 @@ class ApiClient {
     }
   }
 
-  Future<dynamic> getCategories() async {
+  Future<List<Categories>> getCategories(Function(double) updateLoading) async {
     const url = 'https://tiflotv.az/api/categories';
     try {
       final response = await dio.get(url,
@@ -60,15 +63,19 @@ class ApiClient {
             "key": "Accept",
             "value": "application/json",
             "type": "text"
-          }));
+          }),
+          onReceiveProgress: (count, total) =>
+              updateLoading((count / total) / 5));
       final responseData = response.data;
-      final categories = responseData['data']['categories'];
-      final data = categories
+
+      final List categories = responseData['data']['categories'];
+      final List<Categories> data = categories
           .map((e) => Categories.fromJson(e as Map<String, dynamic>))
           .toList();
       return data;
     } catch (error) {
       print(error);
+      return [];
     }
   }
 

@@ -1,13 +1,16 @@
 // ignore_for_file: avoid_print
 
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 import 'package:tiflo_tv/features/domain/models/about_us/about_us.dart';
+import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
+// ignore: unused_import
+import 'package:tiflo_tv/features/domain/models/items/items.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 DefaultCacheManager manager = DefaultCacheManager();
@@ -18,52 +21,111 @@ class OnBoardingProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.az/storage/';
   final String imageError =
       'https://developers.google.com/static/maps/documentation/maps-static/images/error-image-generic.png';
+  final box = Hive.box('data');
+  final audioAll = [];
+  String? dataVersion;
+  List<Categories>? categories;
+  double progressValue = 0.0;
+  double getHomeLoading = 0;
+  double getCategoriesLoading = 0;
   // List? allLessons;
-  // final boxCategories = Hive.box("categories");
-  // final boxCategoryItems = Hive.box('categoryItems');
-  List? homeSliders;
-  List? homeLessons;
+  late Uint8List dataVersionUint8;
   AboutUs? info;
   // String? dataVersion = "";
-  bool isLoading = false;
-
-  Future<void> getDataOnboarding(context) async {
-    if (!isLoading) {
-      isLoading = true;
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) {
-            return Platform.isAndroid
-                ? const Center(
-                    child: SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 3, color: Colors.white),
-                  ))
-                : Center(
-                    child: CupertinoActivityIndicator(
-                    color: Colors.white,
-                    radius: 15.r,
-                  ));
-          });
-      await getHome();
-      isLoading = false;
-      Navigator.pop(context);
-      notifyListeners();
-    }
-  }
+  bool isDataLoading = false;
+  bool isInfoVersionLoading = false;
 
   Future<void> getHome() async {
-    final getHome = await apiClient.getHome();
-    homeSliders = getHome.sliders;
-    homeLessons = getHome.lessons;
+    final home = await apiClient.getHome((progress) {
+      getHomeLoading = progress;
+      progressValue = 0.4 + getHomeLoading;
+      // print('HOME $getHomeLoading');
+      notifyListeners();
+    });
+    final homeSliders = home.sliders;
+    final homeLessons = home.lessons;
+    box.put('homeSliders', homeSliders);
+    box.put('homeLessons', homeLessons);
   }
 
-  Future<void> getInfo() async {
+  Future<void> getCategories() async {
+    categories = await apiClient.getCategories((progress) {
+      getCategoriesLoading = progress;
+      progressValue = 0.6 + getCategoriesLoading;
+      // print('CATEGORIES $getCategoriesLoading');
+      notifyListeners();
+    });
+    box.put('categories', categories);
+  }
+
+  Future<String?> cachedVersion() async {
+    FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
+    final cachedVersion = fileInfo?.file.readAsStringSync();
+    return cachedVersion;
+  }
+
+  Future<void> cachingFiles() async {
+    categories?.forEach((e) {
+      if (e.audio != null) {
+        audioAll.add(linkStart + e.audio?[0]['download_link']);
+      }
+    });
+    categories?.forEach((e) {
+      e.lessons?.forEach((e) {
+        if (e.audio != null) {
+          audioAll.add(linkStart + e.audio?[0]['download_link']);
+        }
+      });
+    });
+    await Future.wait(audioAll.map((audioUrl) async {
+      try {
+        await manager.downloadFile(audioUrl);
+      } catch (e) {
+        throw Exception('Cache downloadFile Error');
+      }
+    }));
+  }
+
+  Future<void> getData() async {
+    if (isDataLoading) {
+      progressValue = 0;
+      for (double i = 0; i <= 0.2; i += 0.001) {
+        await Future.delayed(const Duration(milliseconds: 1));
+        progressValue = i;
+        notifyListeners();
+      }
+      manager.emptyCache;
+      for (double i = 0.2; i <= 0.4; i += 0.001) {
+        await Future.delayed(const Duration(milliseconds: 1));
+        progressValue = i;
+        notifyListeners();
+      }
+      manager.putFile("version.txt", dataVersionUint8);
+      await getHome();
+      await getCategories();
+      for (double i = 0.8; i <= 0.86; i += 0.001) {
+        await Future.delayed(const Duration(milliseconds: 1));
+        progressValue = i;
+        notifyListeners();
+      }
+      await cachingFiles();
+      for (double i = 0.86; i <= 1; i += 0.001) {
+        await Future.delayed(const Duration(milliseconds: 1));
+        progressValue = i;
+        notifyListeners();
+      }
+      isDataLoading = false;
+    }
+    initStateOnBoardingSounds();
+  }
+
+  Future<void> getInfoVersion() async {
     info = await apiClient.getInfo();
-    // dataVersion = info!.version.toString();
+    dataVersion = info!.version.toString();
+    dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
+    if (await cachedVersion() != dataVersion) {
+      isDataLoading = true;
+    }
   }
 
   initStateOnBoardingSounds() async {
@@ -75,15 +137,6 @@ class OnBoardingProvider extends ChangeNotifier {
     await player.setAudioSource(playlist,
         initialIndex: 0, initialPosition: Duration.zero);
     await player.play();
-  }
-
-  Future<void> getData() async {
-    if (!isLoading) {
-      isLoading = true;
-      await getHome();
-      isLoading = false;
-      notifyListeners();
-    }
   }
 
   onValueChanged(value) {

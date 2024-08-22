@@ -5,31 +5,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
+import 'package:tiflo_tv/features/domain/models/items/items.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/providers/category_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/category/category_grid.dart';
 import 'package:tiflo_tv/ui/pod_player_sesli.dart';
 
-class Category extends StatefulWidget {
-  final Categories category;
-
-  const Category({super.key, required this.category});
+class CategoryScreen extends StatefulWidget {
+  final List<Items>? categoryItems;
+  final List? categoryAudio;
+  final String categoryName;
+  const CategoryScreen(
+      {super.key,
+      required this.categoryItems,
+      required this.categoryAudio,
+      required this.categoryName});
 
   @override
-  State<Category> createState() => _CategoryState();
+  State<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _CategoryState extends State<Category> with WidgetsBindingObserver {
+class _CategoryScreenState extends State<CategoryScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.read<CategoryProvider>();
     WidgetsBinding.instance.addObserver(this);
     providerCategory.isBackPressed = false;
-    providerCategory.getCategoryItems(widget.category.category_id,
-        providerOnBoarding.sliding, widget.category.audio);
+    if (providerOnBoarding.sliding == 1) {
+      providerCategory.initStateCategorySounds(
+          // providerOnBoarding.categoriesIdWithItems![widget.categoryIndex],
+          widget.categoryItems,
+          widget.categoryAudio);
+    }
+    // providerCategory.getCategoryItems(widget.category.category_id,
+    // providerOnBoarding.sliding, widget.category.audio);
     providerCategory.indexItem1 = 0;
     super.initState();
   }
@@ -48,7 +60,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerCategory = context.watch<CategoryProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
-    final items = providerCategory.categoryItems ?? [];
+    final items = widget.categoryItems ?? [];
     // providerOnBoarding.categoriesIdWithItems?[widget.categoryIndex];
     // ignore: deprecated_member_use
     return WillPopScope(
@@ -100,7 +112,7 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Text(
-                            widget.category.category_name,
+                            widget.categoryName,
                             maxLines: 1,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
@@ -139,7 +151,9 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                                 )));
                                     if (back == true || back == null) {
                                       await providerCategory.onPopSounds(
-                                          items, widget.category.audio);
+                                        items,
+                                        widget.categoryAudio,
+                                      );
                                     }
                                   }
                                 },
@@ -192,8 +206,12 @@ class _CategoryState extends State<Category> with WidgetsBindingObserver {
                                         .itemsNameSounds(items);
                                   }
                                 },
-                                child: const CategoryGrid())
-                            : const CategoryGrid()),
+                                child: CategoryGrid(
+                                  categoryItems: items,
+                                ))
+                            : CategoryGrid(
+                                categoryItems: items,
+                              )),
                   )
                 ],
               ),

@@ -11,7 +11,7 @@ class HomeScreenCarouselDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerHomeScreen = context.watch<HomeScreenProvider>();
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final sliders = providerOnBoarding.homeSliders;
+    final sliders = providerOnBoarding.box.get('homeSliders');
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 24.h),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

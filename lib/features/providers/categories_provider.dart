@@ -2,53 +2,52 @@
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoriesProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.az/storage/';
-  List? categories;
-  List audio = [];
-  bool isLoading = false;
+  // List? categories;
+  // List audio = [];
+  // bool isLoading = false;
   bool isBackPressed = false;
   int indexItem1 = 0;
   final player = AudioPlayer();
   ScrollController controller = ScrollController();
 
-  Future<void> getCategories(int sliding) async {
+  // Future<void> getCategories(int sliding) async {
     // Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
     // FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
     // final cachedVersion = fileInfo?.file.readAsStringSync();
     // if (cachedVersion != dataVersion) {
-    if (categories == null) {
-      isLoading = true;
-      categories = await apiClient.getCategories();
-      isLoading = false;
-      notifyListeners();
-    }
-    if (sliding == 1) {
-      initStateCategoriesSounds(categories ?? []);
-    }
-    // await manager.emptyCache();
-    // await manager.putFile("version.txt", dataVersionUint8);
-    audio.clear();
-    categories?.forEach((e) {
-      if (e.audio != null && e.audio.isNotEmpty) {
-        audio.add(linkStart + e.audio[0]['download_link']);
-        // boxCategories.add(e);
-      }
-    });
-    await Future.wait(audio.map((audioUrl) async {
-      try {
-        await manager.downloadFile(audioUrl);
-      } catch (e) {
-        print("${e}AAAAAAAAAAAAAAAAAAAAA");
-      }
-    }));
-    // }
-    notifyListeners();
-  }
+  //   if (categories == null) {
+  //     isLoading = true;
+  //     categories = await apiClient.getCategories();
+  //     isLoading = false;
+  //     notifyListeners();
+  //   }
+  //   if (sliding == 1) {
+  //     initStateCategoriesSounds(categories ?? []);
+  //   }
+  //   // await manager.emptyCache();
+  //   // await manager.putFile("version.txt", dataVersionUint8);
+  //   audio.clear();
+  //   categories?.forEach((e) {
+  //     if (e.audio != null && e.audio.isNotEmpty) {
+  //       audio.add(linkStart + e.audio[0]['download_link']);
+  //       // boxCategories.add(e);
+  //     }
+  //   });
+  //   await Future.wait(audio.map((audioUrl) async {
+  //     try {
+  //       await manager.downloadFile(audioUrl);
+  //     } catch (e) {
+  //       print("${e}AAAAAAAAAAAAAAAAAAAAA");
+  //     }
+  //   }));
+  //   // }
+  //   notifyListeners();
+  // }
 
   onSwipe(String swipe, int length) {
     if (swipe == "+") {

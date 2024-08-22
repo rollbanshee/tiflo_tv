@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
 import 'package:tiflo_tv/features/domain/models/items/items.dart';
 import 'package:tiflo_tv/features/providers/categories_provider.dart';
 import 'package:tiflo_tv/features/providers/detailscreen_provider.dart';
@@ -16,7 +17,9 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Hive.initFlutter();
+  Hive.registerAdapter(CategoriesAdapter());
   Hive.registerAdapter(ItemsAdapter());
+  await Hive.openBox("data");
   await Hive.openBox("favourites");
   runApp(const TifloTV());
 }

@@ -19,7 +19,7 @@ class HomeScreenCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerHomeScreen = context.watch<HomeScreenProvider>();
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final sliders = providerOnBoarding.homeSliders;
+    final sliders = providerOnBoarding.box.get('homeSliders');
     return CarouselSlider.builder(
       itemCount: (sliders == null || sliders.isEmpty ? 4 : sliders.length),
       itemBuilder: (context, index, realIndex) => Padding(

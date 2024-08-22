@@ -6,30 +6,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:tiflo_tv/features/domain/models/items/items.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/providers/category_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/detailscreen/detailscreen.dart';
 
 class CategoryGrid extends StatelessWidget {
-  const CategoryGrid({super.key});
+  final List<Items> categoryItems;
+
+  const CategoryGrid({super.key, required this.categoryItems});
 
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategory = context.watch<CategoryProvider>();
-    final categoryItems = providerCategory.categoryItems ?? [];
+    final items = categoryItems;
     double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
-    return providerCategory.isLoading
-        ? Platform.isAndroid
-            ? const Center(
-                child: CircularProgressIndicator(
-                    strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
-            : const Center(child: CupertinoActivityIndicator())
-        : categoryItems.isEmpty
+    return
+        // providerCategory.isLoading
+        //     ? Platform.isAndroid
+        //         ? const Center(
+        //             child: CircularProgressIndicator(
+        //                 strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
+        //         : const Center(child: CupertinoActivityIndicator())
+        //     :
+        items.isEmpty
             ? Center(
                 child: Text(
                   "Siyahı boşdur",
@@ -52,11 +57,11 @@ class CategoryGrid extends StatelessWidget {
                   crossAxisSpacing: 24.w,
                   childAspectRatio: (itemWidth / itemHeight),
                 ),
-                itemCount: categoryItems.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
                   if (providerOnBoarding.sliding == 0) {
                     return _GridItem(
-                      items: categoryItems,
+                      items: items,
                       index: index,
                     );
                   } else if (providerOnBoarding.sliding == 1) {
@@ -69,13 +74,13 @@ class CategoryGrid extends StatelessWidget {
                             child: Material(
                                 color: Colors.white,
                                 child: _GridItem(
-                                  items: categoryItems,
+                                  items: items,
                                   index: index,
                                 )))
                         : Material(
                             color: Colors.white,
                             child: _GridItem(
-                              items: categoryItems,
+                              items: items,
                               index: index,
                             ));
                   }

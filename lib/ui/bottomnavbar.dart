@@ -82,7 +82,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 0;
   final List<Widget> _widgets = const [
     HomeScreen(),
-    Categories(),
+    CategoriesScreen(),
     Favourites(),
     InfoText()
   ];

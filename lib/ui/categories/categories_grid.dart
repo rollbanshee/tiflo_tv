@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+// ignore: unused_import
+import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
 import 'package:tiflo_tv/features/providers/categories_provider.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
@@ -19,18 +21,20 @@ class CategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerCategories.categories??[];
+    final categories = providerOnBoarding.box.get('categories') ?? [];
     double sizeHeight = providerOnBoarding.sliding == 0 ? 4.8 : 4.4;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;
     final double itemWidth = size.width / 2;
-    return providerCategories.isLoading
-        ? Platform.isAndroid
-            ? const Center(
-                child: CircularProgressIndicator(
-                    strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
-            : const Center(child: CupertinoActivityIndicator())
-        : categories.isEmpty
+    return
+        // providerCategories.isLoading
+        //     ? Platform.isAndroid
+        //         ? const Center(
+        //             child: CircularProgressIndicator(
+        //                 strokeWidth: 3, color: Color.fromRGBO(75, 184, 186, 1)))
+        //         : const Center(child: CupertinoActivityIndicator())
+        //     :
+        categories.isEmpty
             ? Center(
                 child: Text(
                 "Siyahı boşdur",
@@ -81,7 +85,7 @@ class CategoriesGrid extends StatelessWidget {
 }
 
 class _GridItem extends StatelessWidget {
-  final List<dynamic> categories;
+  final List categories;
   final int index;
   const _GridItem({required this.categories, required this.index});
 
@@ -101,7 +105,7 @@ class _GridItem extends StatelessWidget {
                 width: double.infinity,
                 height: 88.h,
                 imageUrl: categories[index].image != null
-                    ? providerOnBoarding.linkStart + categories[index].image
+                    ? providerOnBoarding.linkStart + categories[index].image!
                     : providerOnBoarding.imageError,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Platform.isAndroid
@@ -129,8 +133,13 @@ class _GridItem extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Category(
-                                        category: categories[index],
+                                  builder: (context) => CategoryScreen(
+                                        categoryItems:
+                                            categories[index].lessons,
+                                        categoryAudio: categories[index].audio,
+                                        categoryName:
+                                            categories[index].category_name,
+                                        // category: categories[index],
                                       )));
                         },
                       ),

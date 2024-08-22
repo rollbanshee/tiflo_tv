@@ -15,7 +15,7 @@ class HomeScreenGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerOnBoarding = context.watch<OnBoardingProvider>();
-    final lessons = providerOnBoarding.homeLessons;
+    final lessons = providerOnBoarding.box.get('homeLessons');
     double sizeHeight = 4.8;
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / sizeHeight;

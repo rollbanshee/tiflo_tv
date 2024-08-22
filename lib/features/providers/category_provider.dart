@@ -1,54 +1,53 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:tiflo_tv/features/domain/api_client/api_client.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final String linkStart = 'https://tiflotv.az/storage/';
   int indexItem1 = 0;
-  List? categoryItems;
-  List audio = [];
+  // List? categoryItems;
+  // List audio = [];
   bool isBackPressed = false;
-  bool isLoading = false;
+  // bool isLoading = false;
   final player = AudioPlayer();
   ScrollController controller = ScrollController();
 
-  Future<void> getCategoryItems(int id, int sliding, List? initAudio) async {
-    // Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
-    // FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
-    // final cachedVersion = fileInfo?.file.readAsStringSync();
-    // if (cachedVersion != dataVersion) {
-    isLoading = true;
-    categoryItems = await apiClient.getCategoryItems(id);
-    isLoading = false;
-    notifyListeners();
-    if (sliding == 1) {
-      initStateCategorySounds(
-          // providerOnBoarding.categoriesIdWithItems![widget.categoryIndex],
-          categoryItems,
-          initAudio);
-    }
-    // await manager.emptyCache();
-    // await manager.putFile("version.txt", dataVersionUint8);
-    // boxCategoryItems.add(categoryItems);
-    audio.clear();
-    categoryItems?.forEach((e) {
-      if (e.audio != null && e.audio.isNotEmpty) {
-        audio.add(linkStart + e.audio[0]['download_link']);
-      }
-    });
-    await Future.wait(audio.map((audioUrl) async {
-      try {
-        await manager.downloadFile(audioUrl);
-      } catch (e) {
-        print("${e}AAAAAAAAAAAAAAAAAAAAA");
-      }
-    }));
-    // }
-    notifyListeners();
-  }
+  // Future<void> getCategoryItems(int id, int sliding, List? initAudio) async {
+  //   // Uint8List dataVersionUint8 = Uint8List.fromList(dataVersion!.codeUnits);
+  //   // FileInfo? fileInfo = await manager.getFileFromCache("version.txt");
+  //   // final cachedVersion = fileInfo?.file.readAsStringSync();
+  //   // if (cachedVersion != dataVersion) {
+  //   isLoading = true;
+  //   categoryItems = await apiClient.getCategoryItems(id);
+  //   isLoading = false;
+  //   notifyListeners();
+  //   if (sliding == 1) {
+  //     initStateCategorySounds(
+  //         // providerOnBoarding.categoriesIdWithItems![widget.categoryIndex],
+  //         categoryItems,
+  //         initAudio);
+  //   }
+  //   // await manager.emptyCache();
+  //   // await manager.putFile("version.txt", dataVersionUint8);
+  //   // boxCategoryItems.add(categoryItems);
+  //   audio.clear();
+  //   categoryItems?.forEach((e) {
+  //     if (e.audio != null && e.audio.isNotEmpty) {
+  //       audio.add(linkStart + e.audio[0]['download_link']);
+  //     }
+  //   });
+  //   await Future.wait(audio.map((audioUrl) async {
+  //     try {
+  //       await manager.downloadFile(audioUrl);
+  //     } catch (e) {
+  //       print("${e}AAAAAAAAAAAAAAAAAAAAA");
+  //     }
+  //   }));
+  //   // }
+  //   notifyListeners();
+  // }
 
   onSwipe(String swipe, int length) {
     if (swipe == "+") {

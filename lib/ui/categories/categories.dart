@@ -3,27 +3,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+// ignore: unused_import
+import 'package:tiflo_tv/features/domain/models/categories/categories.dart';
 import 'package:tiflo_tv/features/providers/categories_provider.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
 import 'package:tiflo_tv/features/resources/resources.dart';
 import 'package:tiflo_tv/ui/categories/categories_grid.dart';
 import 'package:tiflo_tv/ui/category/category.dart';
 
-class Categories extends StatefulWidget {
-  const Categories({super.key});
+class CategoriesScreen extends StatefulWidget {
+  const CategoriesScreen({super.key});
 
   @override
-  State<Categories> createState() => _CategoriesState();
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
 }
 
-class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
+class _CategoriesScreenState extends State<CategoriesScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     final providerCategories = context.read<CategoriesProvider>();
     final providerOnBoarding = context.read<OnBoardingProvider>();
     WidgetsBinding.instance.addObserver(this);
     providerCategories.isBackPressed = false;
-    providerCategories.getCategories(providerOnBoarding.sliding);
+    // providerCategories.getCategories(providerOnBoarding.sliding);
+    final categories = providerOnBoarding.box.get('categories');
+    if (providerOnBoarding.sliding == 1) {
+      providerCategories.initStateCategoriesSounds(categories ?? []);
+    }
     providerCategories.indexItem1 = 0;
     super.initState();
   }
@@ -42,7 +49,7 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final providerOnBoarding = context.read<OnBoardingProvider>();
     final providerCategories = context.watch<CategoriesProvider>();
-    final categories = providerCategories.categories ?? [];
+    final List categories = providerOnBoarding.box.get('categories') ?? [];
 
     // ignore: deprecated_member_use
     return WillPopScope(
@@ -79,10 +86,22 @@ class _CategoriesState extends State<Categories> with WidgetsBindingObserver {
                                   bool? back = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Category(
-                                                category: categories[
-                                                    providerCategories
-                                                        .indexItem1],
+                                          builder: (context) => CategoryScreen(
+                                                categoryItems: categories[
+                                                        providerCategories
+                                                            .indexItem1]
+                                                    .lessons,
+                                                categoryAudio: categories[
+                                                        providerCategories
+                                                            .indexItem1]
+                                                    .audio,
+                                                categoryName: categories[
+                                                        providerCategories
+                                                            .indexItem1]
+                                                    .category_name,
+                                                // category: categories[
+                                                //     providerCategories
+                                                //         .indexItem1],
                                               )));
                                   if (back == true || back == null) {
                                     await providerCategories

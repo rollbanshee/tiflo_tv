@@ -1,5 +1,8 @@
+// ignore_for_file: unused_import, unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tiflo_tv/features/providers/onboarding_provider.dart';
@@ -21,10 +24,15 @@ class _SplashScreenState extends State<SplashScreen>
         overlays: SystemUiOverlay.values);
     final providerOnBoarding = context.read<OnBoardingProvider>();
     // _scale();
-    providerOnBoarding
-        // .versionCheck()
-        .getInfo()
-        .whenComplete(() => Navigator.pushReplacement(context, _createRoute()));
+    // providerOnBoarding
+    // .versionCheck()
+    // .getData()
+    // .whenComplete(() =>
+    providerOnBoarding.getInfoVersion().whenComplete(() {
+      Navigator.pushReplacement(context, _createRoute());
+    });
+
+    //  );
 
     super.initState();
   }
@@ -68,14 +76,13 @@ class _SplashScreenState extends State<SplashScreen>
   // double scaleFactor = 1;
   @override
   Widget build(BuildContext context) {
+    final providerOnBoarding = context.watch<OnBoardingProvider>();
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(color: Colors.white),
-        child: Center(
-          child: SvgPicture.asset(AppSvgs.splashScreenLogo),
-        ),
+        child: Center(child: SvgPicture.asset(AppSvgs.splashScreenLogo)),
       ),
     );
   }
