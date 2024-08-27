@@ -81,7 +81,7 @@ class OnBoardingProvider extends ChangeNotifier {
       try {
         await manager.downloadFile(audioUrl);
       } catch (e) {
-        throw Exception('Cache downloadFile Error');
+        print('Error in cachingFiles: $e');
       }
     }));
   }
