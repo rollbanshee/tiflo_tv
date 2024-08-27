@@ -100,7 +100,6 @@ class OnBoardingProvider extends ChangeNotifier {
         progressValue = i;
         notifyListeners();
       }
-      manager.putFile("version.txt", dataVersionUint8);
       await getHome();
       await getCategories();
       for (double i = 0.8; i <= 0.86; i += 0.001) {
@@ -109,6 +108,7 @@ class OnBoardingProvider extends ChangeNotifier {
         notifyListeners();
       }
       await cachingFiles();
+      await manager.putFile("version.txt", dataVersionUint8);
       for (double i = 0.86; i <= 1; i += 0.001) {
         await Future.delayed(const Duration(milliseconds: 1));
         progressValue = i;

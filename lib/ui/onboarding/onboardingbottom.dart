@@ -18,7 +18,7 @@ class OnBoardingPartBottom extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              "Azədbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin tabeliyində Sosial Xidmətlər Agentliyinin sosial sifarişi ilə bu filmlərin səsləndirilməsi həyata keçirilmişdir.",
+              "Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin tabeliyində Sosial Xidmətlər Agentliyinin sosial sifarişi ilə bu filmlərin səsləndirilməsi həyata keçirilmişdir.",
               style: TextStyle(
                 fontFamily: AppFonts.poppins,
                 color: const Color.fromRGBO(31, 35, 35, 1),
