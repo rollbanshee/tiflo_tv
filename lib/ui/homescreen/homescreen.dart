@@ -65,7 +65,7 @@ class _HomeScreenPartTwoState extends State<HomeScreenPartTwo> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              "Dərslər",
+              "Videolar",
               style: TextStyle(
                   fontFamily: AppFonts.poppins,
                   fontWeight: FontWeight.w600,
